@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wo liegt der Kontext?</title>
+<style>
+  /* ===== Hessen-CD 2026 (HMKB), Corporate-Design-Manual V 1.0 =====
+     Single File, keine externen Ressourcen. Markenschrift Hessen Gellix
+     wird lokal genutzt, wo sie installiert ist, sonst greift der im Manual
+     vorgesehene Fallback Arial. Nur Regular und Bold.
+     Headlines Bold in VERSALIEN, Copy Regular in gemischter Schreibweise.
+     Markennamen bleiben in ihrer Schreibweise, nie in Versalien. */
+  :root {
+    --blau: #14006E;
+    --rot: #E12D37;
+    --lightgold: #F5E6D2;
+    --weiss: #FFFFFF;
+    --blau-80: #3C46AA;
+    --blau-20: #E6F0FF;
+    --blau-10: #F0FAFF;
+    --rot-10: #FFF0F0;
+    --grau-100: #232328;
+    --grau-80: #5A5A5F;
+    --grau-40: #D2D2D7;
+    --grau-10: #FAFAFF;
+    /* Ortfarben: die beiden dauerhaften Orte in der Blau-Familie,
+       der fluechtige Ort in Rot als Taktgeber. */
+    --ort1: var(--blau);
+    --ort1-hell: var(--blau-20);
+    --ort2: var(--blau-80);
+    --ort2-hell: var(--blau-10);
+    --ort3: var(--rot);
+    --ort3-hell: var(--rot-10);
+    --text: var(--grau-100);
+    --text-leise: var(--grau-80);
+    --rand: var(--grau-40);
+    /* Das Hessen-CD ist flaechig und monolithisch, keine Rundungen. */
+    --radius: 0;
+    --schrift: "Hessen Gellix", Arial, Helvetica, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; }
+  body {
+    font-family: var(--schrift);
+    font-weight: 400;
+    background: var(--grau-10);
+    color: var(--text);
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+  main, header.kopf, footer.fuss { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+
+  /* ===== Kopf ===== */
+  /* Kopf bewusst ohne Hessenmarke (Martins Entscheid 25.08.),
+     Wappen-Icon sitzt klein in der Absenderzeile im Fuss. */
+  header.kopf { padding-top: 28px; }
+  .titelzeile { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  h1 {
+    color: var(--blau); font-size: 2rem; font-weight: 700;
+    text-transform: uppercase; line-height: .95; letter-spacing: -0.01em;
+  }
+  .stand {
+    font-size: .8rem; font-weight: 700; color: var(--blau);
+    background: var(--lightgold); padding: 5px 12px; white-space: nowrap;
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .untertitel { color: var(--text-leise); margin-top: 8px; max-width: 60ch; }
+
+  /* ===== Haupt-Tabs (Nachschlagen / Planen) ===== */
+  .haupttabs { display: flex; gap: 8px; margin: 20px 0 24px; }
+  .haupttabs button {
+    flex: 1; min-height: 48px; font-size: 1.05rem; font-weight: 700;
+    font-family: inherit; cursor: pointer; text-transform: uppercase; letter-spacing: .04em;
+    border: 2px solid var(--blau); border-radius: var(--radius);
+    background: var(--weiss); color: var(--blau);
+  }
+  .haupttabs button[aria-selected="true"] { background: var(--blau); color: var(--weiss); }
+  .haupttabs button:focus-visible, .systemtabs button:focus-visible,
+  .aktionen button:focus-visible, a:focus-visible, summary:focus-visible,
+  input:focus-visible, textarea:focus-visible {
+    outline: 3px solid var(--rot); outline-offset: 2px;
+  }
+
+  /* ===== Orte-Legende ===== */
+  .orte-legende { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: .9rem; font-weight: 700; padding: 6px 12px; background: var(--weiss);
+    border: 2px solid var(--rand);
+  }
+  .chip .punkt { width: 14px; height: 14px; flex: none; }
+  .chip small { font-weight: 400; color: var(--text-leise); }
+
+  /* ===== System-Tabs ===== */
+  /* Markennamen, deshalb gemischte Schreibweise statt Versalien. */
+  .systemtabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .systemtabs button {
+    flex: 1 1 150px; min-height: 48px; font-size: 1rem; font-weight: 700;
+    font-family: inherit; cursor: pointer;
+    border: 2px solid var(--rand); border-radius: var(--radius); background: var(--weiss); color: var(--text);
+  }
+  .systemtabs button[aria-selected="true"] { border-color: var(--blau); background: var(--blau); color: var(--weiss); }
+
+  /* ===== Systemkarte ===== */
+  .systemkarte { background: var(--weiss); border: 2px solid var(--rand); border-radius: var(--radius); padding: 20px; }
+  .systemkopf { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+  .systemkopf h3 { font-size: 1.35rem; font-weight: 700; color: var(--blau); }
+  .begriff {
+    font-size: .85rem; font-weight: 700; color: var(--blau);
+    background: var(--lightgold); padding: 4px 12px;
+  }
+  .klickweg { color: var(--text-leise); font-size: .95rem; margin-bottom: 14px; }
+  .ortblock { border-left: 6px solid; padding: 10px 14px; margin-bottom: 10px; }
+  .ortblock h4 {
+    font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ortblock .nr {
+    width: 22px; height: 22px; color: var(--weiss); font-size: .8rem; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center; flex: none;
+  }
+  .ortblock p { font-size: .95rem; margin-top: 2px; }
+  .ortblock .zusatz { color: var(--text-leise); font-size: .88rem; margin-top: 2px; }
+  .ortblock.o1 { border-color: var(--ort1); background: var(--ort1-hell); }
+  .ortblock.o1 .nr, .legende-o1 { background: var(--ort1); }
+  .ortblock.o1 h4 { color: var(--ort1); }
+  .ortblock.o2 { border-color: var(--ort2); background: var(--ort2-hell); }
+  .ortblock.o2 .nr, .legende-o2 { background: var(--ort2); }
+  .ortblock.o2 h4 { color: var(--ort2); }
+  .ortblock.o3 { border-color: var(--ort3); background: var(--ort3-hell); }
+  .ortblock.o3 .nr, .legende-o3 { background: var(--ort3); }
+  .ortblock.o3 h4 { color: var(--blau); }
+  .ortblock.bonus { border-color: var(--blau); background: var(--lightgold); }
+  .ortblock.bonus h4 { text-transform: none; }
+  .ortblock.bonus h4 { color: var(--blau); }
+  .merkliste { margin-top: 14px; padding-left: 0; list-style: none; }
+  .merkliste li { font-size: .92rem; color: var(--text-leise); padding-left: 22px; position: relative; margin-bottom: 4px; }
+  .merkliste li::before { content: "✓"; position: absolute; left: 0; color: var(--blau-80); font-weight: 700; }
+
+  /* ===== Vergleichstabelle ===== */
+  details.vergleich { margin-top: 18px; background: var(--weiss); border: 2px solid var(--rand); border-radius: var(--radius); }
+  details.vergleich summary {
+    cursor: pointer; font-weight: 700; color: var(--blau); padding: 14px 20px; min-height: 48px;
+    display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: .03em;
+  }
+  details.vergleich summary::-webkit-details-marker { display: none; }
+  details.vergleich summary::before {
+    content: "+"; font-weight: 700; font-size: 1.2rem; line-height: 1;
+    width: 20px; text-align: center; flex: none;
+  }
+  details.vergleich[open] summary::before { content: "\2212"; }
+  details.vergleich[open] summary { border-bottom: 2px solid var(--rand); }
+  .tabellenhuelle { overflow-x: auto; padding: 12px 20px 18px; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: .92rem; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rand); vertical-align: top; }
+  th { color: var(--blau); font-weight: 700; }
+  thead th { text-transform: uppercase; letter-spacing: .03em; font-size: .85rem; }
+  thead th:nth-child(3) { color: var(--ort1); }
+  thead th:nth-child(4) { color: var(--ort2); }
+  .hinweis-box {
+    margin-top: 18px; background: var(--lightgold); color: var(--blau);
+    padding: 14px 18px; font-size: .95rem;
+  }
+  .hinweis-box b { font-weight: 700; }
+
+  /* ===== Planen ===== */
+  .plan-intro { color: var(--text-leise); margin-bottom: 16px; max-width: 65ch; }
+  .feld { background: var(--weiss); border: 2px solid var(--rand); border-left-width: 6px; border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px; }
+  .feld.f0 { border-left-color: var(--grau-80); }
+  .feld.f1 { border-left-color: var(--ort1); }
+  .feld.f2 { border-left-color: var(--ort2); }
+  .feld.f3 { border-left-color: var(--ort3); }
+  .feld label {
+    display: block; font-weight: 700; color: var(--blau); margin-bottom: 3px;
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .feld .frage { display: block; font-size: .9rem; color: var(--text-leise); margin-bottom: 8px; }
+  .feld input[type="text"], .feld textarea {
+    width: 100%; font: inherit; font-size: 1rem; color: var(--text);
+    border: 1px solid var(--rand); border-radius: var(--radius); padding: 10px 12px; background: var(--grau-10);
+  }
+  .feld textarea { min-height: 88px; resize: vertical; }
+  .feld .fusszeile { display: flex; justify-content: space-between; gap: 10px; margin-top: 4px; }
+  .feld .datenhinweis { font-size: .78rem; color: var(--text-leise); }
+  .feld .zaehler { font-size: .78rem; color: var(--text-leise); white-space: nowrap; }
+  .feld .zaehler.warnung { color: var(--rot); font-weight: 700; }
+  .aktionen { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 8px; }
+  .aktionen button {
+    min-height: 48px; padding: 0 18px; font-size: 1rem; font-weight: 700; font-family: inherit;
+    border-radius: var(--radius); cursor: pointer; border: 2px solid var(--blau);
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .aktionen .primaer { background: var(--blau); color: var(--weiss); }
+  .aktionen .sekundaer { background: var(--weiss); color: var(--blau); }
+  .status { min-height: 24px; font-size: .92rem; color: var(--blau-80); font-weight: 700; }
+  .weiter-box { margin-top: 14px; background: var(--blau-20); border-left: 6px solid var(--blau); padding: 14px 18px; font-size: .95rem; }
+  .weiter-box b { color: var(--blau); font-weight: 700; }
+  .weiter-box a { color: var(--blau); }
+
+  /* ===== Fuß ===== */
+  footer.fuss { margin-top: 36px; padding-bottom: 32px; font-size: .85rem; color: var(--text-leise); }
+  footer.fuss details { border-top: 1px solid var(--rand); }
+  footer.fuss summary { cursor: pointer; padding: 10px 0; min-height: 44px; display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--blau); }
+  footer.fuss summary::-webkit-details-marker { display: none; }
+  footer.fuss summary::before { content: "+"; font-weight: 700; width: 14px; text-align: center; flex: none; }
+  footer.fuss details[open] summary::before { content: "\2212"; }
+  footer.fuss .inhalt { padding: 0 0 12px; max-width: 70ch; }
+  .absenderzeile {
+    border-top: 3px solid var(--blau); padding-top: 12px; margin-top: 4px;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  }
+  .absenderzeile .absender { font-weight: 700; text-transform: uppercase; color: var(--blau); letter-spacing: .03em; display: flex; align-items: center; gap: 8px; }
+  .absenderzeile img.wappen { height: 26px; width: auto; display: block; }
+  .schlusszeile { margin-top: 10px; }
+
+  /* ===== Druckansicht: nur der Plan ===== */
+  .druck { display: none; }
+  @media print {
+    body > *:not(.druck) { display: none; }
+    .druck { display: block; font-size: 12pt; color: #000; }
+    .druck h1 { font-size: 16pt; margin-bottom: 2pt; text-transform: uppercase; }
+    .druck .meta { font-size: 10pt; margin-bottom: 14pt; }
+    .druck h2 { font-size: 12pt; margin: 10pt 0 2pt; text-transform: uppercase; }
+    .druck p { margin-bottom: 6pt; white-space: pre-wrap; }
+    .druck .leer { color: #666; }
+    @page { margin: 20mm 15mm 15mm 25mm; }
+    html, body { height: auto; background: #fff; }
+  }
+
+  @media (max-width: 560px) {
+    h1 { font-size: 1.6rem; }
+    .systemtabs button { flex-basis: 46%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="kopf">
+  <div class="titelzeile">
+    <h1>Wo liegt der Kontext?</h1>
+    <span class="stand">Stand: 25.08.2026</span>
+  </div>
+  <p class="untertitel">Anweisungen, Dateien, Chatfeld: dieselben drei Orte in ChatGPT, Claude, Gemini und AIS.chat. Einmal verstanden, überall anwendbar.</p>
+  <nav class="haupttabs" role="tablist" aria-label="Ansichten">
+    <button id="tab-nachschlagen" role="tab" aria-selected="true" aria-controls="ansicht-nachschlagen">Nachschlagen</button>
+    <button id="tab-planen" role="tab" aria-selected="false" aria-controls="ansicht-planen">Planen</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ===================== Ansicht: Nachschlagen ===================== -->
+  <section id="ansicht-nachschlagen" role="tabpanel" aria-labelledby="tab-nachschlagen">
+    <div class="orte-legende" aria-hidden="true">
+      <span class="chip"><span class="punkt legende-o1"></span>1&nbsp;Anweisungen <small>· dauerhaft</small></span>
+      <span class="chip"><span class="punkt legende-o2"></span>2&nbsp;Dateien <small>· dauerhaft</small></span>
+      <span class="chip"><span class="punkt legende-o3"></span>3&nbsp;Chatfeld <small>· flüchtig</small></span>
+    </div>
+
+    <nav class="systemtabs" role="tablist" aria-label="KI-System wählen" id="systemtabs"></nav>
+    <div id="systemansicht"></div>
+
+    <details class="vergleich">
+      <summary>Alle vier auf einen Blick</summary>
+      <div class="tabellenhuelle">
+        <table>
+          <thead>
+            <tr><th>System</th><th>heißt dort</th><th>Anweisungen</th><th>Dateien</th></tr>
+          </thead>
+          <tbody id="vergleichzeilen"></tbody>
+        </table>
+      </div>
+    </details>
+
+    <div class="hinweis-box">
+      <b>Für alle vier gilt:</b> Ein kostenloses Konto reicht, ohne Login geht es nicht.
+      Und: keine echten Schülerdaten in kommerzielle Tools.
+      <b>Mit Lernenden arbeiten Sie datenschutzkonform in AIS.chat.</b>
+    </div>
+  </section>
+
+  <!-- ===================== Ansicht: Planen ===================== -->
+  <section id="ansicht-planen" role="tabpanel" aria-labelledby="tab-planen" hidden>
+    <p class="plan-intro">Dasselbe Raster wie auf dem Workshop-Handzettel: Idee notieren, in die drei Orte zerlegen. Das Ergebnis lässt sich kopieren, speichern oder drucken und ist das Rohmaterial für Ihre Vorlage.</p>
+
+    <div class="feld f0">
+      <label for="plan-idee">Meine Unterrichtsidee</label>
+      <span class="frage" id="idee-frage">Thema, Fach, Lerngruppe</span>
+      <input type="text" id="plan-idee" aria-describedby="idee-frage datenhinweis-0">
+      <div class="fusszeile"><span class="datenhinweis" id="datenhinweis-0">Bitte keine persönlichen Daten eingeben.</span></div>
+    </div>
+
+    <div class="feld f1">
+      <label for="plan-ort1">Ort 1 · Anweisungen</label>
+      <span class="frage" id="ort1-frage">Welche Rolle spielt die KI? Für wen, mit welchem Verhalten und Format?</span>
+      <textarea id="plan-ort1" aria-describedby="ort1-frage zaehler-ort1"></textarea>
+      <div class="fusszeile">
+        <span class="datenhinweis">Bleibt lokal in Ihrem Browser.</span>
+        <span class="zaehler" id="zaehler-ort1"></span>
+      </div>
+    </div>
+
+    <div class="feld f2">
+      <label for="plan-ort2">Ort 2 · Dateien</label>
+      <span class="frage" id="ort2-frage">Welches Material geben Sie mit? Mindestens eine Datei, kompaktes Markdown wirkt am besten.</span>
+      <textarea id="plan-ort2" aria-describedby="ort2-frage"></textarea>
+    </div>
+
+    <div class="feld f3">
+      <label for="plan-ort3">Ort 3 · Chatfeld</label>
+      <span class="frage" id="ort3-frage">Die erste Aufgabe. In AIS.chat: der Arbeitsauftrag, den Lernende beim Start sehen.</span>
+      <textarea id="plan-ort3" aria-describedby="ort3-frage zaehler-ort3"></textarea>
+      <div class="fusszeile">
+        <span class="datenhinweis">Bleibt lokal in Ihrem Browser.</span>
+        <span class="zaehler" id="zaehler-ort3"></span>
+      </div>
+    </div>
+
+    <div class="aktionen">
+      <button type="button" class="primaer" id="btn-kopieren">Als Text kopieren</button>
+      <button type="button" class="sekundaer" id="btn-markdown">Als Markdown speichern</button>
+      <button type="button" class="sekundaer" id="btn-drucken">Drucken</button>
+    </div>
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+
+    <div class="weiter-box">
+      <b>Weiter zur fertigen Vorlage:</b> Plan kopieren und in das
+      <a href="https://t1p.de/ais-chat-config">Konfigurationstool (t1p.de/ais-chat-config)</a> einfügen,
+      das macht daraus die fertigen Felder. Oder direkt in AIS.chat einbauen.
+    </div>
+  </section>
+</main>
+
+<footer class="fuss">
+  <details>
+    <summary>Impressum</summary>
+    <div class="inhalt">
+      <p>Herausgeber: Hessische Lehrkräfteakademie, Sachgebiet F 3-4 Medienbildung, Künstliche Intelligenz, Servicestelle Medienproduktion, Lahnstraße 61, 35398 Gießen.</p>
+      <p>Verantwortlich: Markus Pleimfeldner. Kontakt: <a href="mailto:martin.kurz@bildung.hessen.de">martin.kurz@bildung.hessen.de</a></p>
+      <p>Begleitmaterial zum Workshop „Vom Prompt zum Kontext“. Angaben zu Funktionen und Plänen der genannten KI-Dienste geben den Stand vom August 2026 wieder und ändern sich häufig. Für Vollständigkeit und Aktualität wird keine Gewähr übernommen, maßgeblich ist die Dokumentation des jeweiligen Anbieters. Diese Seite ersetzt keine Rechtsberatung.</p>
+      <p>Lizenz: CC BY-SA 4.0, Namensnennung Martin Kurz und Oliver Janßen, Hessische Lehrkräfteakademie. Ausgenommen sind das Hessenwappen sowie Logos und Marken Dritter.</p>
+    </div>
+  </details>
+  <details>
+    <summary>Datenschutz</summary>
+    <div class="inhalt">
+      <p>Diese Seite verarbeitet keine personenbezogenen Daten, lädt keine externen Ressourcen, setzt keine Cookies und überträgt keine Daten an Dritte. Alle Eingaben bleiben lokal in Ihrem Browser und sind nach dem Schließen der Seite verloren. Bitte geben Sie in den Eingabefeldern trotzdem keine persönlichen Daten ein.</p>
+      <p>Hosting: Die Seite wird über GitHub Pages ausgeliefert (GitHub Inc., ein US-Anbieter). Beim Aufruf wird technisch bedingt Ihre IP-Adresse an den Hoster übertragen, damit die Seite geladen werden kann. Darüber hinaus werden keine Daten erhoben. Wird die Seite aus einem Moodle-Kurs heraus aufgerufen, liefert der jeweilige Moodle-Server sie aus, dann besteht keine Verbindung zu GitHub.</p>
+      <p>Ihnen stehen die Rechte auf Auskunft, Berichtigung und Löschung sowie ein Beschwerderecht zu. Zuständige Aufsichtsbehörde ist der Hessische Beauftragte für Datenschutz und Informationsfreiheit.</p>
+    </div>
+  </details>
+  <div class="absenderzeile">
+    <span class="absender"><img class="wappen" src="data:image/png;base64,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" alt="">Hessische Lehrkräfteakademie</span>
+    <span>Sachgebiet F 3-4 Medienbildung, Künstliche Intelligenz</span>
+  </div>
+  <p class="schlusszeile">Angaben zu Plänen und Limits: Stand 19.08.2026, Quellen: offizielle Hilfeseiten der Anbieter. Oberflächen und Grenzen ändern sich, im Zweifel gilt die Anbieter-Doku.</p>
+</footer>
+
+<!-- Druckansicht wird per Skript aus den Eingaben befüllt -->
+<div class="druck" aria-hidden="true">
+  <h1>Mein Kontext-Plan</h1>
+  <p class="meta">Workshop „Vom Prompt zum Kontext“ · Name: ______________________</p>
+  <h2>Unterrichtsidee</h2><p id="druck-idee"></p>
+  <h2>Ort 1 · Anweisungen</h2><p id="druck-ort1"></p>
+  <h2>Ort 2 · Dateien</h2><p id="druck-ort2"></p>
+  <h2>Ort 3 · Chatfeld / Arbeitsauftrag</h2><p id="druck-ort3"></p>
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================================
+   Daten: vier Systeme, gleiche Struktur. Inhalte hier pflegen,
+   das Markup entsteht in den Render-Funktionen.
+   Faktenstand 19.08.2026, Quellen: offizielle Hilfeseiten der Anbieter.
+   ===================================================================== */
+const SYSTEME = [
+  {
+    id: "chatgpt", name: "ChatGPT", begriff: "Projekt",
+    klickweg: "Seitenleiste → „Projekte“ → „Neues Projekt“",
+    anweisungen: { wo: "Projektanweisungen im Projekt festlegen.", zusatz: "Gelten für jeden Chat im Projekt." },
+    dateien: { wo: "„Dateien“ zum Projekt hinzufügen.", zusatz: "Free-Plan: 5 Dateien pro Projekt (Plus: 25)." },
+    chatfeld: { wo: "Die Nachricht im Projekt-Chat.", zusatz: "Nur noch die konkrete Aufgabe." },
+    merken: [
+      "Auch im kostenlosen Plan enthalten, unbegrenzt viele Projekte",
+      "Achtung: Bei aktivem „Improve the model for everyone“ können Inhalte fürs Training genutzt werden"
+    ]
+  },
+  {
+    id: "claude", name: "Claude", begriff: "Projekt",
+    klickweg: "Seitenleiste → „Projekte“ → neues Projekt anlegen",
+    anweisungen: { wo: "„Set project instructions“ im Projekt.", zusatz: "Gelten für jeden Chat im Projekt." },
+    dateien: { wo: "Projektwissen: Dateien hochladen.", zusatz: "Auch im Free-Plan enthalten." },
+    chatfeld: { wo: "Die Nachricht im Projekt-Chat.", zusatz: "Nur noch die konkrete Aufgabe." },
+    merken: [
+      "Free-Plan: maximal 5 Projekte",
+      "Anweisungen und Wissensdateien auch mit kostenlosem Konto"
+    ]
+  },
+  {
+    id: "gemini", name: "Gemini", begriff: "Gem",
+    klickweg: "Menü → „Gems“ → Gem erstellen",
+    anweisungen: { wo: "Instruktionen des Gems.", zusatz: "Name plus Anweisungen, dauerhaft gespeichert." },
+    dateien: { wo: "„Knowledge“: Dateien vom Gerät, aus Drive oder NotebookLM.", zusatz: "Bis 10 Dateien pro Gem." },
+    chatfeld: { wo: "Die Nachricht im Gem-Chat.", zusatz: "Nur noch die konkrete Aufgabe." },
+    merken: [
+      "Heißt hier Gem, nicht Projekt, wichtig für die Suche in der Oberfläche",
+      "Google-Konto und Mindestalter 13 nötig, Tageskontingente als Prozentwert"
+    ]
+  },
+  {
+    id: "aischat", name: "AIS.chat", begriff: "Vorlage",
+    klickweg: "app.ais-chat.schule → Vorlage erstellen: Assistent, Lernszenario oder Dialogpartner",
+    anweisungen: { wo: "Feld „Instruktionen“ der Vorlage.", zusatz: "Bis 10.000 Zeichen." },
+    dateien: { wo: "Materialdateien der Vorlage.", zusatz: "Bis zu 5 Dateien, kompaktes Markdown wirkt am besten." },
+    chatfeld: { wo: "Das, was die Lernenden tippen.", zusatz: "Bonus siehe unten." },
+    bonus: "Der Arbeitsauftrag (500 Zeichen), den Lernende beim Start sehen. Ein vierter Ort, den der freie Chat nicht kennt.",
+    merken: [
+      "Kostenlos, Login über das Schulportal Hessen (VIDIS), pseudonym",
+      "Datenschutzkonform: Modelle in der EU, kein Training mit Eingaben",
+      "Für die Arbeit mit Lernenden der richtige Ort"
+    ]
+  }
+];
+
+const ORTE = [
+  { key: "anweisungen", titel: "Anweisungen", klasse: "o1", nr: "1" },
+  { key: "dateien", titel: "Dateien", klasse: "o2", nr: "2" },
+  { key: "chatfeld", titel: "Chatfeld", klasse: "o3", nr: "3" }
+];
+
+/* ===== Nachschlagen: System-Tabs und Karte rendern ===== */
+const tabsNav = document.getElementById("systemtabs");
+const ansicht = document.getElementById("systemansicht");
+let aktivesSystem = SYSTEME[0].id;
+
+function renderSystemTabs() {
+  tabsNav.innerHTML = "";
+  SYSTEME.forEach(sys => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.role = "tab";
+    b.id = "systab-" + sys.id;
+    b.setAttribute("aria-selected", String(sys.id === aktivesSystem));
+    b.textContent = sys.name;
+    b.addEventListener("click", () => { aktivesSystem = sys.id; renderSystemTabs(); renderSystemkarte(); });
+    tabsNav.appendChild(b);
+  });
+}
+
+function renderSystemkarte() {
+  const sys = SYSTEME.find(s => s.id === aktivesSystem);
+  const karte = document.createElement("article");
+  karte.className = "systemkarte";
+  karte.setAttribute("role", "tabpanel");
+  karte.setAttribute("aria-labelledby", "systab-" + sys.id);
+
+  const kopf = document.createElement("div");
+  kopf.className = "systemkopf";
+  const h3 = document.createElement("h3");
+  h3.textContent = sys.name;
+  const badge = document.createElement("span");
+  badge.className = "begriff";
+  badge.textContent = "heißt hier: " + sys.begriff;
+  kopf.append(h3, badge);
+
+  const weg = document.createElement("p");
+  weg.className = "klickweg";
+  weg.textContent = "Wo klicken: " + sys.klickweg;
+
+  karte.append(kopf, weg);
+
+  ORTE.forEach(ort => {
+    const d = sys[ort.key];
+    const block = document.createElement("div");
+    block.className = "ortblock " + ort.klasse;
+    const h4 = document.createElement("h4");
+    const nr = document.createElement("span");
+    nr.className = "nr";
+    nr.textContent = ort.nr;
+    h4.append(nr, document.createTextNode(ort.titel));
+    const p = document.createElement("p");
+    p.textContent = d.wo;
+    block.append(h4, p);
+    if (d.zusatz) {
+      const z = document.createElement("p");
+      z.className = "zusatz";
+      z.textContent = d.zusatz;
+      block.appendChild(z);
+    }
+    karte.appendChild(block);
+  });
+
+  if (sys.bonus) {
+    const block = document.createElement("div");
+    block.className = "ortblock bonus";
+    const h4 = document.createElement("h4");
+    h4.textContent = "BONUS IN AIS.chat";
+    const p = document.createElement("p");
+    p.textContent = sys.bonus;
+    block.append(h4, p);
+    karte.appendChild(block);
+  }
+
+  const ul = document.createElement("ul");
+  ul.className = "merkliste";
+  sys.merken.forEach(text => {
+    const li = document.createElement("li");
+    li.textContent = text;
+    ul.appendChild(li);
+  });
+  karte.appendChild(ul);
+
+  ansicht.innerHTML = "";
+  ansicht.appendChild(karte);
+}
+
+function renderVergleich() {
+  const tbody = document.getElementById("vergleichzeilen");
+  tbody.innerHTML = "";
+  SYSTEME.forEach(sys => {
+    const tr = document.createElement("tr");
+    [sys.name, sys.begriff, sys.anweisungen.wo, sys.dateien.wo + " " + (sys.dateien.zusatz || "")]
+      .forEach((text, i) => {
+        const zelle = document.createElement(i === 0 ? "th" : "td");
+        if (i === 0) zelle.scope = "row";
+        zelle.textContent = text;
+        tr.appendChild(zelle);
+      });
+    tbody.appendChild(tr);
+  });
+}
+
+/* ===== Haupt-Tabs mit Hash-Routing (#nachschlagen / #planen) ===== */
+const ANSICHTEN = [
+  { hash: "#nachschlagen", tab: document.getElementById("tab-nachschlagen"), panel: document.getElementById("ansicht-nachschlagen") },
+  { hash: "#planen", tab: document.getElementById("tab-planen"), panel: document.getElementById("ansicht-planen") }
+];
+
+function zeigeAnsicht(hash) {
+  const ziel = ANSICHTEN.find(a => a.hash === hash) || ANSICHTEN[0];
+  ANSICHTEN.forEach(a => {
+    const aktiv = a === ziel;
+    a.tab.setAttribute("aria-selected", String(aktiv));
+    a.panel.hidden = !aktiv;
+  });
+}
+
+ANSICHTEN.forEach(a => a.tab.addEventListener("click", () => {
+  history.replaceState(null, "", a.hash);
+  zeigeAnsicht(a.hash);
+}));
+window.addEventListener("hashchange", () => zeigeAnsicht(location.hash));
+
+/* ===== Planen: Zustand, Zähler, Export ===== */
+const felder = {
+  idee: document.getElementById("plan-idee"),
+  ort1: document.getElementById("plan-ort1"),
+  ort2: document.getElementById("plan-ort2"),
+  ort3: document.getElementById("plan-ort3")
+};
+const statusZeile = document.getElementById("status");
+
+// AIS.chat-Limits als Orientierung am Zähler (Referenzdokument)
+const LIMITS = { ort1: 10000, ort3: 500 };
+
+function aktualisiereZaehler(key) {
+  const el = document.getElementById("zaehler-" + key);
+  if (!el) return;
+  const laenge = felder[key].value.length;
+  el.textContent = laenge + " / " + LIMITS[key] + " Zeichen (AIS.chat-Limit)";
+  el.classList.toggle("warnung", laenge > LIMITS[key]);
+}
+
+function synchronisiereDruck() {
+  [["idee", "druck-idee"], ["ort1", "druck-ort1"], ["ort2", "druck-ort2"], ["ort3", "druck-ort3"]]
+    .forEach(([key, zielId]) => {
+      const ziel = document.getElementById(zielId);
+      const wert = felder[key].value.trim();
+      ziel.textContent = wert || "—";
+      ziel.classList.toggle("leer", !wert);
+    });
+}
+
+Object.keys(felder).forEach(key => {
+  felder[key].addEventListener("input", () => {
+    aktualisiereZaehler(key);
+    synchronisiereDruck();
+  });
+});
+
+function planAlsMarkdown() {
+  const heute = new Date().toLocaleDateString("de-DE");
+  const wert = key => felder[key].value.trim() || "(noch offen)";
+  return [
+    "# Mein Kontext-Plan",
+    "",
+    "Workshop „Vom Prompt zum Kontext“ · " + heute,
+    "",
+    "## Unterrichtsidee",
+    wert("idee"),
+    "",
+    "## Ort 1 · Anweisungen (Rolle, Zielgruppe, Verhalten, Format)",
+    wert("ort1"),
+    "",
+    "## Ort 2 · Dateien (mitgegebenes Material)",
+    wert("ort2"),
+    "",
+    "## Ort 3 · Chatfeld / Arbeitsauftrag",
+    wert("ort3"),
+    "",
+    "## Weiterarbeit",
+    "Diesen Plan in das Konfigurationstool einfügen (t1p.de/ais-chat-config),",
+    "das macht daraus die fertigen Felder für eine AIS.chat-Vorlage.",
+    ""
+  ].join("\n");
+}
+
+function meldeStatus(text) {
+  statusZeile.textContent = text;
+  window.setTimeout(() => { statusZeile.textContent = ""; }, 4000);
+}
+
+document.getElementById("btn-kopieren").addEventListener("click", async () => {
+  const text = planAlsMarkdown();
+  try {
+    await navigator.clipboard.writeText(text);
+    meldeStatus("Plan kopiert. Jetzt z. B. im Konfigurationstool einfügen.");
+  } catch {
+    // Rückfallebene für Browser ohne Clipboard-Berechtigung
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+    meldeStatus("Plan kopiert. Jetzt z. B. im Konfigurationstool einfügen.");
+  }
+});
+
+document.getElementById("btn-markdown").addEventListener("click", () => {
+  const datum = new Date().toISOString().slice(0, 10);
+  const blob = new Blob([planAlsMarkdown()], { type: "text/markdown;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "kontext-plan_" + datum + ".md";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+  meldeStatus("Markdown-Datei gespeichert.");
+});
+
+document.getElementById("btn-drucken").addEventListener("click", () => {
+  synchronisiereDruck();
+  window.print();
+});
+window.addEventListener("beforeprint", synchronisiereDruck);
+
+/* ===== Init ===== */
+renderSystemTabs();
+renderSystemkarte();
+renderVergleich();
+aktualisiereZaehler("ort1");
+aktualisiereZaehler("ort3");
+synchronisiereDruck();
+zeigeAnsicht(location.hash);
+</script>
+</body>
+</html>
