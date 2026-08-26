@@ -24,6 +24,12 @@ des Workshops unter `artefakt-wo-liegt-der-kontext/index-hessen.html`. Änderung
 vornehmen und mit `./veroeffentlichen.sh` aus dem Wurzelverzeichnis jenes Repos hierher
 übertragen, nicht direkt hier bearbeiten.
 
+## Material
+
+Im Ordner [material/](material/) liegen die Beispieldateien zum Workshop: ein
+vollständiges Praxisbeispiel aus Projektanweisung und vier Wissensdateien, alle
+Inhalte frei erfunden. Details in [material/LIESMICH.md](material/LIESMICH.md).
+
 ## Lizenz
 
 CC BY-SA 4.0, siehe [LICENSE.md](LICENSE.md). Ausgenommen sind das Hessenwappen sowie
