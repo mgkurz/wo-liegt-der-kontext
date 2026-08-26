@@ -164,6 +164,46 @@
   }
   .hinweis-box b { font-weight: 700; }
 
+  /* ===== Materialkasten im Planen-Tab =====
+     Downloads fuer alle, die kein eigenes Material dabeihaben. Gruppiert nach
+     den beiden dauerhaften Orten, damit sichtbar ist, wohin eine Datei gehoert.
+     Farben aus den vorhandenen Ort-Variablen, keine neuen. */
+  .material-box {
+    background: var(--weiss); border: 2px solid var(--blau);
+    border-radius: var(--radius); padding: 16px 18px; margin-bottom: 20px;
+  }
+  .material-box h2 {
+    font-size: 1.05rem; font-weight: 700; color: var(--blau);
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .material-box .einleitung {
+    font-size: .92rem; color: var(--text-leise); margin: 6px 0 14px; max-width: 70ch;
+  }
+  .material-gruppe { border-left: 6px solid; padding: 6px 0 6px 14px; margin-bottom: 12px; }
+  .material-gruppe:last-of-type { margin-bottom: 0; }
+  .material-gruppe.g1 { border-color: var(--ort1); background: var(--ort1-hell); }
+  .material-gruppe.g2 { border-color: var(--ort2); background: var(--ort2-hell); }
+  .material-gruppe h3 {
+    font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+  }
+  .material-gruppe.g1 h3 { color: var(--ort1); }
+  .material-gruppe.g2 h3 { color: var(--ort2); }
+  .material-liste { list-style: none; margin-top: 6px; }
+  .material-liste li { border-top: 1px solid var(--rand); }
+  .material-liste li:first-child { border-top: 0; }
+  .material-liste a {
+    display: flex; align-items: baseline; gap: 4px 10px; flex-wrap: wrap;
+    min-height: 44px; padding: 8px 4px; text-decoration: none; color: var(--text);
+  }
+  .material-liste a:hover .name, .material-liste a:focus-visible .name { text-decoration: underline; }
+  .material-liste .pfeil { font-weight: 700; color: var(--blau); flex: none; }
+  .material-liste .name { font-weight: 700; color: var(--blau); }
+  .material-liste .wozu { font-size: .88rem; color: var(--text-leise); flex: 1 1 220px; }
+  .material-liste .format {
+    font-size: .78rem; font-weight: 700; color: var(--blau);
+    background: var(--lightgold); padding: 2px 8px; white-space: nowrap; flex: none;
+  }
+
   /* ===== Planen ===== */
   .plan-intro { color: var(--text-leise); margin-bottom: 16px; max-width: 65ch; }
   .feld { background: var(--weiss); border: 2px solid var(--rand); border-left-width: 6px; border-radius: var(--radius); padding: 14px 16px; margin-bottom: 14px; }
@@ -242,7 +282,7 @@
 <header class="kopf">
   <div class="titelzeile">
     <h1>Wo liegt der Kontext?</h1>
-    <span class="stand">Stand: 25.08.2026</span>
+    <span class="stand">Stand: 26.08.2026</span>
   </div>
   <p class="untertitel">Anweisungen, Dateien, Chatfeld: dieselben drei Orte in ChatGPT, Claude, Gemini und AIS.chat. Einmal verstanden, überall anwendbar.</p>
   <nav class="haupttabs" role="tablist" aria-label="Ansichten">
@@ -279,12 +319,37 @@
       <b>Für alle vier gilt:</b> Ein kostenloses Konto reicht, ohne Login geht es nicht.
       Und: keine echten Schülerdaten in kommerzielle Tools.
       <b>Mit Lernenden arbeiten Sie datenschutzkonform in AIS.chat.</b>
+      <p style="margin-top:10px">Kein eigenes Material dabei? Im Bereich <a href="#planen">Planen</a> liegen neun Beispieldateien zum Herunterladen.</p>
     </div>
   </section>
 
   <!-- ===================== Ansicht: Planen ===================== -->
   <section id="ansicht-planen" role="tabpanel" aria-labelledby="tab-planen" hidden>
     <p class="plan-intro">Dasselbe Raster wie auf dem Workshop-Handzettel: Idee notieren, in die drei Orte zerlegen. Das Ergebnis lässt sich kopieren, speichern oder drucken und ist das Rohmaterial für Ihre Vorlage.</p>
+
+    <div class="material-box">
+      <h2>Kein eigenes Material dabei?</h2>
+      <p class="einleitung">Neun Beispieldateien zum Herunterladen und Ausprobieren. Alle Inhalte sind frei erfunden: kein echtes Curriculum, keine echten Aufgaben, keine Personendaten. Die MD-Dateien sind schlichte Textdateien, genau das Format, das eine KI am liebsten liest.</p>
+      <div class="material-gruppe g1">
+        <h3>Ort 1 · Anweisungen</h3>
+        <ul class="material-liste">
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/projektanweisungen.md" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Projektanweisung</span><span class="wozu">Die Anweisung des Beispielprojekts, knappe Fassung</span><span class="format">MD · 1 KB</span></a></li>
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/projektanweisungen_mitAbfrage.md" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Projektanweisung mit Abfrage</span><span class="wozu">Dieselbe Anweisung, die KI fragt zu Beginn nach Thema und Aufgabentyp</span><span class="format">MD · 1,5 KB</span></a></li>
+        </ul>
+      </div>
+      <div class="material-gruppe g2">
+        <h3>Ort 2 · Dateien</h3>
+        <ul class="material-liste">
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/1_kontext-vorlage.docx" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Kontext-Vorlage</span><span class="wozu">Vier Fragen: Rolle, Material, Zielgruppe, Ziel</span><span class="format">DOCX · 9 KB</span></a></li>
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/2_kerncurriculum-beispiel.docx" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Kerncurriculum</span><span class="wozu">Fiktiver Curriculum-Auszug als Fachgrundlage</span><span class="format">DOCX · 9 KB</span></a></li>
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/3_materialstil-vorlage.docx" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Materialstil-Vorlage</span><span class="wozu">Arbeitsblatt-Format und Operatorenliste</span><span class="format">DOCX · 9 KB</span></a></li>
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/4_bewertungsraster-beispiel.docx" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Bewertungsraster</span><span class="wozu">Raster mit Erwartungshorizont</span><span class="format">DOCX · 9 KB</span></a></li>
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/sachtext-fotosynthese-klasse7.md" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Sachtext Fotosynthese</span><span class="wozu">Grundlagentext, Biologie Klasse 7</span><span class="format">MD · 2 KB</span></a></li>
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/gedicht-mondnacht-klasse8.md" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Gedicht Mondnacht</span><span class="wozu">Textgrundlage mit Begleitmaterial, Deutsch Klasse 8</span><span class="format">MD · 1,8 KB</span></a></li>
+        <li><a href="https://mgkurz.github.io/wo-liegt-der-kontext/material/kompetenzraster-kurzvortrag.md" download rel="noopener"><span class="pfeil" aria-hidden="true">↓</span><span class="name">Kompetenzraster Kurzvortrag</span><span class="wozu">Fächerübergreifend, Sekundarstufe I</span><span class="format">MD · 1,7 KB</span></a></li>
+        </ul>
+      </div>
+    </div>
 
     <div class="feld f0">
       <label for="plan-idee">Meine Unterrichtsidee</label>
@@ -349,6 +414,7 @@
     <div class="inhalt">
       <p>Diese Seite verarbeitet keine personenbezogenen Daten, lädt keine externen Ressourcen, setzt keine Cookies und überträgt keine Daten an Dritte. Alle Eingaben bleiben lokal in Ihrem Browser und sind nach dem Schließen der Seite verloren. Bitte geben Sie in den Eingabefeldern trotzdem keine persönlichen Daten ein.</p>
       <p>Hosting: Die Seite wird über GitHub Pages ausgeliefert (GitHub Inc., ein US-Anbieter). Beim Aufruf wird technisch bedingt Ihre IP-Adresse an den Hoster übertragen, damit die Seite geladen werden kann. Darüber hinaus werden keine Daten erhoben. Wird die Seite aus einem Moodle-Kurs heraus aufgerufen, liefert der jeweilige Moodle-Server sie aus, dann besteht keine Verbindung zu GitHub.</p>
+      <p>Downloads: Die Beispieldateien liegen im selben GitHub-Repository. Beim Anklicken wird die Datei von dort geladen, dabei wird technisch bedingt Ihre IP-Adresse an den Hoster übertragen. Es werden keine weiteren Daten erhoben, und ohne Klick wird nichts geladen.</p>
       <p>Ihnen stehen die Rechte auf Auskunft, Berichtigung und Löschung sowie ein Beschwerderecht zu. Zuständige Aufsichtsbehörde ist der Hessische Beauftragte für Datenschutz und Informationsfreiheit.</p>
     </div>
   </details>
