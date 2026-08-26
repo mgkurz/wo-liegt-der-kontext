@@ -21,8 +21,8 @@ Verantwortlich: Markus Pleimfeldner. Kontakt: martin.kurz@bildung.hessen.de
 
 Dieses Repo ist der **Veröffentlichungsort**. Gepflegt wird die Seite im Projekt-Repo
 des Workshops unter `artefakt-wo-liegt-der-kontext/index-hessen.html`. Änderungen dort
-vornehmen und mit `veroeffentlichen.sh` hierher übertragen, nicht direkt hier
-bearbeiten.
+vornehmen und mit `./veroeffentlichen.sh` aus dem Wurzelverzeichnis jenes Repos hierher
+übertragen, nicht direkt hier bearbeiten.
 
 ## Lizenz
 
