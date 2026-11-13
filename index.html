@@ -131,9 +131,6 @@
   .ortblock.o3 { border-color: var(--ort3); background: var(--ort3-hell); }
   .ortblock.o3 .nr, .legende-o3 { background: var(--ort3); }
   .ortblock.o3 h4 { color: var(--blau); }
-  .ortblock.bonus { border-color: var(--blau); background: var(--lightgold); }
-  .ortblock.bonus h4 { text-transform: none; }
-  .ortblock.bonus h4 { color: var(--blau); }
   .merkliste { margin-top: 14px; padding-left: 0; list-style: none; }
   .merkliste li { font-size: .92rem; color: var(--text-leise); padding-left: 22px; position: relative; margin-bottom: 4px; }
   .merkliste li::before { content: "✓"; position: absolute; left: 0; color: var(--blau-80); font-weight: 700; }
@@ -282,7 +279,7 @@
 <header class="kopf">
   <div class="titelzeile">
     <h1>Wo liegt der Kontext?</h1>
-    <span class="stand">Stand: 26.08.2026</span>
+    <span class="stand">Stand: 13.11.2026</span>
   </div>
   <p class="untertitel">Anweisungen, Dateien, Chatfeld: dieselben drei Orte in ChatGPT, Claude, Gemini und AIS.chat. Einmal verstanden, überall anwendbar.</p>
   <nav class="haupttabs" role="tablist" aria-label="Ansichten">
@@ -317,7 +314,7 @@
 
     <div class="hinweis-box">
       <b>Für alle vier gilt:</b> Ein kostenloses Konto reicht, ohne Login geht es nicht.
-      Und: keine echten Schülerdaten in kommerzielle Tools.
+      Und: nichts, was auf eine Schülerin oder einen Schüler schließen lässt, in kommerzielle Tools.
       <b>Mit Lernenden arbeiten Sie datenschutzkonform in AIS.chat.</b>
       <p style="margin-top:10px">Kein eigenes Material dabei? Im Bereich <a href="#planen">Planen</a> liegen neun Beispieldateien zum Herunterladen.</p>
     </div>
@@ -383,11 +380,10 @@
 
     <div class="feld f3">
       <label for="plan-ort3">Ort 3 · Chatfeld</label>
-      <span class="frage" id="ort3-frage">Die erste Aufgabe. In AIS.chat: der Arbeitsauftrag, den Lernende beim Start sehen.</span>
-      <textarea id="plan-ort3" aria-describedby="ort3-frage zaehler-ort3"></textarea>
+      <span class="frage" id="ort3-frage">Die erste Aufgabe. Kurz, weil der Rest schon an seinem Ort steht.</span>
+      <textarea id="plan-ort3" aria-describedby="ort3-frage"></textarea>
       <div class="fusszeile">
         <span class="datenhinweis">Bleibt lokal in Ihrem Browser.</span>
-        <span class="zaehler" id="zaehler-ort3"></span>
       </div>
     </div>
 
@@ -399,9 +395,10 @@
     <p class="status" id="status" role="status" aria-live="polite"></p>
 
     <div class="weiter-box">
-      <b>Weiter zur fertigen Vorlage:</b> Plan kopieren und in das
-      <a href="https://mgkurz.github.io/ais-chat-config/">Konfigurationstool (mgkurz.github.io/ais-chat-config)</a> einfügen,
-      das macht daraus die fertigen Felder. Oder direkt in AIS.chat einbauen.
+      <b>Weiter zur fertigen Vorlage:</b> Im
+      <a href="https://mgkurz.github.io/ais-chat-config/">Konfigurationstool (t1p.de/ais-chat-bauen)</a> den Prompt kopieren,
+      in eine KI einfügen und diesen Plan ganz unten unter IHRE EINGABE einsetzen. Die KI macht daraus die fertigen Felder.
+      Oder direkt in AIS.chat einbauen.
     </div>
   </section>
 </main>
@@ -439,7 +436,7 @@
   <h2>Unterrichtsidee</h2><p id="druck-idee"></p>
   <h2>Ort 1 · Anweisungen</h2><p id="druck-ort1"></p>
   <h2>Ort 2 · Dateien</h2><p id="druck-ort2"></p>
-  <h2>Ort 3 · Chatfeld / Arbeitsauftrag</h2><p id="druck-ort3"></p>
+  <h2>Ort 3 · Chatfeld</h2><p id="druck-ort3"></p>
 </div>
 
 <script>
@@ -485,15 +482,15 @@ const SYSTEME = [
     ]
   },
   {
-    id: "aischat", name: "AIS.chat", begriff: "Vorlage",
-    klickweg: "app.ais-chat.schule → Vorlage erstellen: Assistent, Lernszenario oder Dialogpartner",
+    id: "aischat", name: "AIS.chat", begriff: "Assistent",
+    klickweg: "app.ais-chat.schule → Vorlage erstellen → Assistent (daneben: Lernszenario, Dialogpartner)",
     anweisungen: { wo: "Feld „Instruktionen“ der Vorlage.", zusatz: "Bis 10.000 Zeichen." },
     dateien: { wo: "Materialdateien der Vorlage.", zusatz: "Bis zu 5 Dateien, kompaktes Markdown wirkt am besten." },
-    chatfeld: { wo: "Das, was die Lernenden tippen.", zusatz: "Bonus siehe unten." },
-    bonus: "Der Arbeitsauftrag (500 Zeichen), den Lernende beim Start sehen. Ein vierter Ort, den der freie Chat nicht kennt.",
+    chatfeld: { wo: "Das, was Sie ins Chatfeld tippen.", zusatz: "Nur noch die konkrete Aufgabe." },
     merken: [
       "Kostenlos, Login über das Schulportal Hessen (VIDIS), pseudonym",
       "Datenschutzkonform: Modelle in der EU, kein Training mit Eingaben",
+      "Drei Vorlagentypen: Assistent für Ihre eigene Arbeit, Lernszenario und Dialogpartner für Lernende",
       "Für die Arbeit mit Lernenden der richtige Ort"
     ]
   }
@@ -567,17 +564,6 @@ function renderSystemkarte() {
     karte.appendChild(block);
   });
 
-  if (sys.bonus) {
-    const block = document.createElement("div");
-    block.className = "ortblock bonus";
-    const h4 = document.createElement("h4");
-    h4.textContent = "BONUS IN AIS.chat";
-    const p = document.createElement("p");
-    p.textContent = sys.bonus;
-    block.append(h4, p);
-    karte.appendChild(block);
-  }
-
   const ul = document.createElement("ul");
   ul.className = "merkliste";
   sys.merken.forEach(text => {
@@ -637,14 +623,16 @@ const felder = {
 };
 const statusZeile = document.getElementById("status");
 
-// AIS.chat-Limits als Orientierung am Zähler (Referenzdokument)
-const LIMITS = { ort1: 10000, ort3: 500 };
+// Zeichenlimit als Orientierung am Zähler. Nur Ort 1 hat eines: das
+// Instruktionsfeld einer AIS.chat-Vorlage fasst 10.000 Zeichen. Das Chatfeld
+// ist unbegrenzt, deshalb steht dort kein Zähler.
+const LIMITS = { ort1: 10000 };
 
 function aktualisiereZaehler(key) {
   const el = document.getElementById("zaehler-" + key);
   if (!el) return;
   const laenge = felder[key].value.length;
-  el.textContent = laenge + " / " + LIMITS[key] + " Zeichen (AIS.chat-Limit)";
+  el.textContent = laenge + " / " + LIMITS[key] + " Zeichen (Instruktionsfeld in AIS.chat)";
   el.classList.toggle("warnung", laenge > LIMITS[key]);
 }
 
@@ -682,12 +670,12 @@ function planAlsMarkdown() {
     "## Ort 2 · Dateien (mitgegebenes Material)",
     wert("ort2"),
     "",
-    "## Ort 3 · Chatfeld / Arbeitsauftrag",
+    "## Ort 3 · Chatfeld",
     wert("ort3"),
     "",
     "## Weiterarbeit",
-    "Diesen Plan in das Konfigurationstool einfügen (mgkurz.github.io/ais-chat-config),",
-    "das macht daraus die fertigen Felder für eine AIS.chat-Vorlage.",
+    "Im Konfigurationstool (t1p.de/ais-chat-bauen) den Prompt kopieren, in eine KI einfügen",
+    "und diesen Plan ganz unten unter IHRE EINGABE einsetzen. Das ergibt die fertigen Felder für eine AIS.chat-Vorlage.",
     ""
   ].join("\n");
 }
