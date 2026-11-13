@@ -67,10 +67,11 @@
   }
   .untertitel { color: var(--text-leise); margin-top: 8px; max-width: 60ch; }
 
-  /* ===== Haupt-Tabs (Nachschlagen / Planen) ===== */
-  .haupttabs { display: flex; gap: 8px; margin: 20px 0 24px; }
+  /* ===== Haupt-Tabs (Start / Mitmachen / Nachschlagen / Planen) =====
+     Auf schmalen Bildschirmen 2 x 2, siehe Media Query unten. */
+  .haupttabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 24px; }
   .haupttabs button {
-    flex: 1; min-height: 48px; font-size: 1.05rem; font-weight: 700;
+    flex: 1 1 0; min-height: 48px; font-size: 1.05rem; font-weight: 700;
     font-family: inherit; cursor: pointer; text-transform: uppercase; letter-spacing: .04em;
     border: 2px solid var(--blau); border-radius: var(--radius);
     background: var(--weiss); color: var(--blau);
@@ -78,8 +79,13 @@
   .haupttabs button[aria-selected="true"] { background: var(--blau); color: var(--weiss); }
   .haupttabs button:focus-visible, .systemtabs button:focus-visible,
   .aktionen button:focus-visible, a:focus-visible, summary:focus-visible,
-  input:focus-visible, textarea:focus-visible {
+  input:focus-visible, textarea:focus-visible, button:focus-visible {
     outline: 3px solid var(--rot); outline-offset: 2px;
+  }
+  /* Nur fuer Screenreader sichtbar, etwa "(öffnet in neuem Tab)". */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
 
   /* ===== Orte-Legende ===== */
@@ -134,6 +140,11 @@
   .merkliste { margin-top: 14px; padding-left: 0; list-style: none; }
   .merkliste li { font-size: .92rem; color: var(--text-leise); padding-left: 22px; position: relative; margin-bottom: 4px; }
   .merkliste li::before { content: "✓"; position: absolute; left: 0; color: var(--blau-80); font-weight: 700; }
+  /* Stand und Quelle je System, Hinweis bei angekuendigten Aenderungen */
+  .quelle { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--rand); font-size: .85rem; color: var(--text-leise); }
+  .quelle a { color: var(--blau); }
+  .systemhinweis { margin: 4px 0 12px; background: var(--lightgold); color: var(--blau); padding: 10px 14px; font-size: .92rem; }
+  .systemhinweis b { font-weight: 700; }
 
   /* ===== Vergleichstabelle ===== */
   details.vergleich { margin-top: 18px; background: var(--weiss); border: 2px solid var(--rand); border-radius: var(--radius); }
@@ -235,6 +246,104 @@
   .weiter-box b { color: var(--blau); font-weight: 700; }
   .weiter-box a { color: var(--blau); }
 
+  /* ===== Start ===== */
+  .einstieg { color: var(--text-leise); margin-bottom: 16px; max-width: 65ch; }
+  .startkarten { list-style: none; display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; }
+  .startkarte {
+    display: flex; flex-direction: column; gap: 4px; position: relative;
+    min-height: 48px; padding: 18px 56px 18px 20px; text-decoration: none;
+    background: var(--weiss); border: 2px solid var(--blau); border-radius: var(--radius); color: var(--text);
+  }
+  .startkarte .titel {
+    font-size: 1.25rem; font-weight: 700; color: var(--blau);
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  .startkarte .text { color: var(--text-leise); }
+  .startkarte .pfeil {
+    position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+    font-size: 1.6rem; font-weight: 700; color: var(--blau);
+  }
+  .startkarte:hover .titel, .startkarte:focus-visible .titel { text-decoration: underline; }
+  .startkarte.haupt { background: var(--blau); }
+  .startkarte.haupt .titel, .startkarte.haupt .text, .startkarte.haupt .pfeil { color: var(--weiss); }
+  .startkarte.haupt .titel { font-size: 1.45rem; }
+  @media (min-width: 640px) {
+    .startkarten { grid-template-columns: 1fr 1fr; }
+    .startkarten .breit { grid-column: 1 / -1; }
+  }
+
+  /* ===== Mitmachen ===== */
+  .hinweis-box.oben { margin: 0 0 18px; }
+  .schritte { list-style: none; }
+  .schritt {
+    background: var(--weiss); border: 2px solid var(--rand); border-left: 6px solid var(--blau);
+    border-radius: var(--radius); padding: 18px 20px; margin-bottom: 16px;
+  }
+  .schrittkopf { display: flex; align-items: center; gap: 12px; }
+  .schrittkopf .nr {
+    width: 36px; height: 36px; flex: none; display: inline-flex; align-items: center; justify-content: center;
+    background: var(--blau); color: var(--weiss); font-size: 1.1rem; font-weight: 700;
+  }
+  .schritt h2 { font-size: 1.25rem; font-weight: 700; color: var(--blau); text-transform: uppercase; letter-spacing: .03em; line-height: 1.2; }
+  .schritt .lead { margin: 10px 0 12px; }
+  .schritt .feld { margin-bottom: 10px; }
+  .schritt .aktionen { margin: 12px 0 6px; }
+  .schritt p + p { margin-top: 8px; }
+  .aktionen a.knopf {
+    display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px;
+    font-size: 1rem; font-weight: 700; text-decoration: none; border: 2px solid var(--blau);
+    border-radius: var(--radius); text-transform: uppercase; letter-spacing: .04em;
+  }
+  .aktionen a.knopf.primaer { background: var(--blau); color: var(--weiss); }
+  .aktionen a.knopf.sekundaer { background: var(--weiss); color: var(--blau); }
+  .leise { color: var(--text-leise); font-size: .92rem; }
+  .beispiele { margin: 4px 0 10px; }
+  .beispiele h3 {
+    font-size: .85rem; font-weight: 700; color: var(--blau);
+    text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px;
+  }
+  .beispiel { border-left: 6px solid var(--blau-80); background: var(--blau-10); padding: 10px 14px; margin-bottom: 8px; }
+  .beispiel p { font-size: .92rem; }
+  .beispiel button {
+    margin-top: 8px; min-height: 44px; padding: 0 14px; font: inherit; font-size: .9rem; font-weight: 700;
+    cursor: pointer; border: 2px solid var(--blau); border-radius: var(--radius);
+    background: var(--weiss); color: var(--blau);
+  }
+  .klickkette {
+    list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 0;
+    margin: 4px 0 14px; font-weight: 700; color: var(--blau); font-size: .95rem;
+  }
+  .klickkette li { display: inline-flex; align-items: center; }
+  .klickkette li + li::before { content: "\203A"; margin: 0 8px; color: var(--rot); font-size: 1.2rem; }
+  .klickkette span { background: var(--blau-20); padding: 4px 10px; }
+  .mit-system { margin-top: 4px; }
+  .mit-system .ortblock .ziel { font-weight: 700; color: var(--blau); font-size: .9rem; margin-top: 4px; }
+  details.hilfe { margin-top: 14px; border: 2px solid var(--rand); border-radius: var(--radius); background: var(--grau-10); }
+  details.hilfe summary {
+    cursor: pointer; list-style: none; font-weight: 700; color: var(--blau); font-size: .9rem;
+    padding: 8px 14px; min-height: 44px; display: flex; align-items: center; gap: 10px;
+    text-transform: uppercase; letter-spacing: .03em;
+  }
+  details.hilfe summary::-webkit-details-marker { display: none; }
+  details.hilfe summary::before { content: "+"; font-size: 1.1rem; line-height: 1; width: 16px; text-align: center; flex: none; }
+  details.hilfe[open] summary::before { content: "\2212"; }
+  details.hilfe ul { padding: 0 14px 12px 36px; font-size: .92rem; }
+  details.hilfe li + li { margin-top: 4px; }
+  .pruefliste { list-style: none; margin-top: 4px; }
+  .pruefliste li { display: grid; grid-template-columns: 1fr; gap: 4px; border-top: 1px solid var(--rand); padding: 10px 0; }
+  .pruefliste li:first-child { border-top: 0; }
+  .pruefliste label { display: flex; align-items: flex-start; gap: 12px; min-height: 44px; cursor: pointer; }
+  .pruefliste input[type="checkbox"] { width: 24px; height: 24px; flex: none; margin-top: 2px; accent-color: var(--blau); cursor: pointer; }
+  .pruefliste .spalte {
+    display: block; font-size: .75rem; font-weight: 700; color: var(--text-leise);
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .pruefliste .soll { padding-left: 36px; font-size: .95rem; }
+  @media (min-width: 640px) {
+    .pruefliste li { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .pruefliste .soll { padding-left: 0; }
+  }
+
   /* ===== Fuß ===== */
   footer.fuss { margin-top: 36px; padding-bottom: 32px; font-size: .85rem; color: var(--text-leise); }
   footer.fuss details { border-top: 1px solid var(--rand); }
@@ -269,6 +378,9 @@
     h1 { font-size: 1.6rem; }
     .systemtabs button { flex-basis: 46%; }
   }
+  @media (max-width: 660px) {
+    .haupttabs button { flex: 1 1 calc(50% - 4px); font-size: 1rem; letter-spacing: .02em; }
+  }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
   }
@@ -283,14 +395,198 @@
   </div>
   <p class="untertitel">Anweisungen, Dateien, Chatfeld: dieselben drei Orte in ChatGPT, Claude, Gemini und AIS.chat. Einmal verstanden, überall anwendbar.</p>
   <nav class="haupttabs" role="tablist" aria-label="Ansichten">
-    <button id="tab-nachschlagen" role="tab" aria-selected="true" aria-controls="ansicht-nachschlagen">Nachschlagen</button>
-    <button id="tab-planen" role="tab" aria-selected="false" aria-controls="ansicht-planen">Planen</button>
+    <button type="button" id="tab-start" role="tab" aria-selected="true" aria-controls="ansicht-start">Start</button>
+    <button type="button" id="tab-mitmachen" role="tab" aria-selected="false" aria-controls="ansicht-mitmachen">Mitmachen</button>
+    <button type="button" id="tab-nachschlagen" role="tab" aria-selected="false" aria-controls="ansicht-nachschlagen">Nachschlagen</button>
+    <button type="button" id="tab-planen" role="tab" aria-selected="false" aria-controls="ansicht-planen">Planen</button>
   </nav>
 </header>
 
 <main>
+  <!-- ===================== Ansicht: Start ===================== -->
+  <section id="ansicht-start" role="tabpanel" aria-labelledby="tab-start">
+    <p class="einstieg">Begleitseite zum Workshop „Vom Prompt zum Kontext“. Wählen Sie, was Sie gerade brauchen.</p>
+
+    <ul class="startkarten">
+      <li class="breit"><a class="startkarte haupt" href="#mitmachen">
+        <span class="titel">Mitmachen</span>
+        <span class="text">Heute im Workshop: in vier Schritten zum eigenen Assistenten</span>
+        <span class="pfeil" aria-hidden="true">→</span>
+      </a></li>
+      <li><a class="startkarte" href="#nachschlagen">
+        <span class="titel">Nachschlagen</span>
+        <span class="text">Die drei Orte in ChatGPT, Claude, Gemini und AIS.chat</span>
+        <span class="pfeil" aria-hidden="true">→</span>
+      </a></li>
+      <li><a class="startkarte" href="#planen">
+        <span class="titel">Planen</span>
+        <span class="text">Idee in die drei Orte zerlegen, dazu neun Beispieldateien</span>
+        <span class="pfeil" aria-hidden="true">→</span>
+      </a></li>
+    </ul>
+
+    <div class="material-box">
+      <h2>Außerdem</h2>
+      <ul class="material-liste">
+        <li><a href="https://mgkurz.github.io/ais-chat-config/" target="_blank" rel="noopener"><span class="pfeil" aria-hidden="true">↗</span><span class="name">Config-Tool</span><span class="wozu">Der Prompt, mit dem eine KI Ihren Assistenten schreibt</span><span class="format">t1p.de/ais-chat-bauen</span><span class="sr-only">(öffnet in neuem Tab)</span></a></li>
+        <li><a href="https://t1p.de/ais-chat-slk" target="_blank" rel="noopener"><span class="pfeil" aria-hidden="true">↗</span><span class="name">Selbstlernkurs AIS.chat</span><span class="wozu">AIS.chat von Grund auf, mit Kompetenznachweis</span><span class="format">t1p.de/ais-chat-slk</span><span class="sr-only">(öffnet in neuem Tab)</span></a></li>
+      </ul>
+    </div>
+
+    <div class="hinweis-box">
+      <b>Für ChatGPT, Claude, Gemini und AIS.chat gilt:</b> Ein kostenloses Konto reicht, ohne Login geht es nicht.
+      Und: Nichts, was auf eine Schülerin oder einen Schüler schließen lässt, in kommerzielle Konten.
+      <b>Mit Lernenden arbeiten Sie datenschutzkonform in AIS.chat.</b>
+    </div>
+  </section>
+
+  <!-- ===================== Ansicht: Mitmachen ===================== -->
+  <!-- Schritte 1 bis 3 wortgleich mit der Schrittfolie „Selbst ausprobieren“
+       (folien-impuls/build.py, live_und_ausprobieren). Schritt 4 nur hier. -->
+  <section id="ansicht-mitmachen" role="tabpanel" aria-labelledby="tab-mitmachen" hidden>
+    <p class="einstieg">Die drei Schritte von der Folie, dazu ein vierter: prüfen, ob der Kontext wirkt. Ihre Eingaben bleiben in Ihrem Browser.</p>
+
+    <div class="hinweis-box oben">
+      <b>Vorweg:</b> Nichts, was auf eine Schülerin oder einen Schüler schließen lässt, in kommerzielle Konten.
+      Ohne Namen und ohne persönliche Details ist ein Text Material.
+    </div>
+
+    <ol class="schritte">
+      <!-- Schritt 1 -->
+      <li class="schritt">
+        <div class="schrittkopf"><span class="nr" aria-hidden="true">1</span><h2 id="schritt1-titel">Idee notieren</h2></div>
+        <p class="lead">Eine Aufgabe, die bei Ihnen immer wiederkehrt. Zwei, drei Sätze.</p>
+
+        <div class="feld f0">
+          <label for="mit-idee">Meine Idee</label>
+          <span class="frage" id="mit-idee-frage">Was soll der Assistent für Sie tun?</span>
+          <textarea id="mit-idee" aria-describedby="mit-idee-frage mit-idee-hinweis"></textarea>
+          <div class="fusszeile"><span class="datenhinweis" id="mit-idee-hinweis">Bitte keine persönlichen Daten eingeben. Bleibt lokal in Ihrem Browser.</span></div>
+        </div>
+
+        <div class="beispiele">
+          <h3>Oder ein Beispiel übernehmen</h3>
+          <div class="beispiel">
+            <p id="beispiel-1">Ein Assistent, der mir hilft, Rückmeldungen zu Kurzvorträgen in der Sekundarstufe I zu formulieren. Ich gebe ihm meine Stichpunkte aus der Beobachtung, ohne Namen. Er ordnet sie dem Kompetenzraster zu, das ich als Materialdatei mitgebe, und schreibt daraus eine Rückmeldung: erst Stärken, dann höchstens zwei Verbesserungsschritte, keine Note.</p>
+            <button type="button" data-beispiel="beispiel-1">Beispiel Rückmeldung übernehmen</button>
+          </div>
+          <div class="beispiel">
+            <p id="beispiel-2">Ein Assistent, der mir hilft, Elternbriefe zu schreiben. Ich gebe ihm Anlass, Datum und die wichtigsten Punkte, ohne Namen. Er schreibt einen kurzen, freundlichen Brief in einfacher Sprache und hält sich an die Vorgaben unserer Schule, die ich als Materialdatei mitgebe.</p>
+            <button type="button" data-beispiel="beispiel-2">Beispiel Elternbrief übernehmen</button>
+          </div>
+        </div>
+
+        <div class="aktionen">
+          <button type="button" class="primaer" data-kopiere-idee="status-schritt1">Idee kopieren</button>
+        </div>
+        <p class="status" id="status-schritt1" role="status" aria-live="polite"></p>
+
+        <details class="hilfe">
+          <summary>Falls es anders aussieht</summary>
+          <ul>
+            <li>Keine Idee? Rückmeldungen, Elternbriefe, Differenzierung, Stundenvorbereitung.</li>
+          </ul>
+        </details>
+      </li>
+
+      <!-- Schritt 2 -->
+      <li class="schritt">
+        <div class="schrittkopf"><span class="nr" aria-hidden="true">2</span><h2 id="schritt2-titel">Prompt holen</h2></div>
+        <p class="lead">Im Config-Tool, Typ Assistent. Prompt und Idee in eine KI geben, heute duck.ai ohne Konto.</p>
+
+        <ol class="klickkette" aria-label="Klickpfad">
+          <li><span>Config-Tool</span></li>
+          <li><span>Assistent</span></li>
+          <li><span>Prompt kopieren</span></li>
+          <li><span>duck.ai</span></li>
+          <li><span>einfügen</span></li>
+          <li><span>Idee ganz unten unter IHRE EINGABE</span></li>
+          <li><span>senden</span></li>
+        </ol>
+
+        <div class="aktionen">
+          <a class="knopf primaer" href="https://mgkurz.github.io/ais-chat-config/" target="_blank" rel="noopener">Config-Tool öffnen<span class="sr-only"> (öffnet in neuem Tab)</span></a>
+          <a class="knopf sekundaer" href="https://duck.ai" target="_blank" rel="noopener">duck.ai öffnen<span class="sr-only"> (öffnet in neuem Tab)</span></a>
+          <button type="button" class="sekundaer" data-kopiere-idee="status-schritt2">Idee kopieren</button>
+        </div>
+        <p class="status" id="status-schritt2" role="status" aria-live="polite"></p>
+
+        <p>duck.ai braucht kein Konto. Wer eine eigene KI hat (Claude, ChatGPT, Gemini), nimmt die. Der Weg ist derselbe.</p>
+        <p class="leise">Die Antwort braucht einige Minuten. Lassen Sie den Tab offen und lesen Sie solange Schritt 3.</p>
+
+        <details class="hilfe">
+          <summary>Falls es anders aussieht</summary>
+          <ul>
+            <li>duck.ai antwortet nicht oder das Modell ist nicht wählbar: denselben Prompt in Ihre eigene KI einfügen.</li>
+            <li>Die Antwort bricht mittendrin ab: „weiter“ schreiben.</li>
+            <li>Den freien Chat in AIS.chat heute nicht nehmen, dort ist der Weg noch ungeprüft.</li>
+          </ul>
+        </details>
+      </li>
+
+      <!-- Schritt 3 -->
+      <li class="schritt">
+        <div class="schrittkopf"><span class="nr" aria-hidden="true">3</span><h2 id="schritt3-titel">Eintragen</h2></div>
+        <p class="lead">In Projekt, Gem oder AIS.chat-Assistent. Eine Materialdatei mitgeben.</p>
+
+        <nav class="systemtabs" role="tablist" aria-label="Wo tragen Sie ein?" id="mit-systemtabs"></nav>
+        <div id="mit-systemansicht" class="mit-system"></div>
+
+        <p style="margin-top:12px"><a href="#planen">Kein eigenes Material dabei? Beispieldateien im Bereich Planen</a></p>
+
+        <details class="hilfe">
+          <summary>Falls es anders aussieht</summary>
+          <ul>
+            <li>Kein Konto und kein AIS.chat-Zugang: zu zweit an einem Gerät arbeiten, oder bis Schritt 2 gehen und das Ergebnis als Text sichern. Den Rest zu Hause über diese Seite.</li>
+            <li>Die Oberfläche heißt anders als hier beschrieben: im Bereich <a href="#nachschlagen">Nachschlagen</a> stehen Stand und Quelle je System.</li>
+          </ul>
+        </details>
+      </li>
+
+      <!-- Schritt 4 -->
+      <li class="schritt">
+        <div class="schrittkopf"><span class="nr" aria-hidden="true">4</span><h2 id="schritt4-titel">Prüfen</h2></div>
+        <p class="lead">Vier kurze Proben in Ihrem neuen Assistenten. Haken Sie ab, was passt. Die Haken werden nicht gespeichert.</p>
+
+        <ol class="pruefliste">
+          <li>
+            <label><input type="checkbox" aria-describedby="soll-1"><span><span class="spalte">Das probieren Sie</span>Eine typische Aufgabe stellen, ohne etwas zu erklären.</span></label>
+            <p class="soll" id="soll-1"><span class="spalte">Das sollte passieren</span>Rolle, Format und Ton kommen aus der Anweisung, Sie müssen nichts wiederholen.</p>
+          </li>
+          <li>
+            <label><input type="checkbox" aria-describedby="soll-2"><span><span class="spalte">Das probieren Sie</span>Etwas fragen, das nur in Ihrer Materialdatei steht.</span></label>
+            <p class="soll" id="soll-2"><span class="spalte">Das sollte passieren</span>Die Antwort nutzt die Begriffe und Kriterien der Datei, nicht Allgemeinwissen.</p>
+          </li>
+          <li>
+            <label><input type="checkbox" aria-describedby="soll-3"><span><span class="spalte">Das probieren Sie</span>Etwas verlangen, das Ihre Anweisung ausschließt (zum Beispiel eine Note).</span></label>
+            <p class="soll" id="soll-3"><span class="spalte">Das sollte passieren</span>Der Assistent bleibt in der Grenze oder sagt, dass er das nicht tut.</p>
+          </li>
+          <li>
+            <label><input type="checkbox" aria-describedby="soll-4"><span><span class="spalte">Das probieren Sie</span>Einen neuen Chat öffnen und dieselbe Aufgabe stellen.</span></label>
+            <p class="soll" id="soll-4"><span class="spalte">Das sollte passieren</span>Gleiches Verhalten, ohne dass Sie etwas neu eingeben.</p>
+          </li>
+        </ol>
+        <p class="status" id="pruef-stand" role="status" aria-live="polite"></p>
+        <p>Passt etwas nicht? Dann fehlt meist ein Satz in der Anweisung oder die passende Datei. Ergänzen, neuen Chat öffnen, noch einmal prüfen.</p>
+
+        <details class="hilfe">
+          <summary>Falls es anders aussieht</summary>
+          <ul>
+            <li>Der Assistent ignoriert die Datei: prüfen, ob sie wirklich am dauerhaften Ort liegt (Projekt, Gem, Vorlage) und nicht nur im Chat hochgeladen wurde.</li>
+          </ul>
+        </details>
+      </li>
+    </ol>
+
+    <div class="weiter-box">
+      <b>Nicht fertig geworden?</b> Alles bleibt unter <b>t1p.de/ais-chat-kontext</b> erreichbar.
+      Ihre Eingaben auf dieser Seite gehen beim Schließen verloren, kopieren Sie Ihre Idee vorher.
+      Im Bereich <a href="#planen">Planen</a> zerlegen Sie die Idee in Ruhe in die drei Orte.
+    </div>
+  </section>
+
   <!-- ===================== Ansicht: Nachschlagen ===================== -->
-  <section id="ansicht-nachschlagen" role="tabpanel" aria-labelledby="tab-nachschlagen">
+  <section id="ansicht-nachschlagen" role="tabpanel" aria-labelledby="tab-nachschlagen" hidden>
     <div class="orte-legende" aria-hidden="true">
       <span class="chip"><span class="punkt legende-o1"></span>1&nbsp;Anweisungen <small>· dauerhaft</small></span>
       <span class="chip"><span class="punkt legende-o2"></span>2&nbsp;Dateien <small>· dauerhaft</small></span>
@@ -314,7 +610,7 @@
 
     <div class="hinweis-box">
       <b>Für alle vier gilt:</b> Ein kostenloses Konto reicht, ohne Login geht es nicht.
-      Und: nichts, was auf eine Schülerin oder einen Schüler schließen lässt, in kommerzielle Tools.
+      Und: Nichts, was auf eine Schülerin oder einen Schüler schließen lässt, in kommerzielle Konten.
       <b>Mit Lernenden arbeiten Sie datenschutzkonform in AIS.chat.</b>
       <p style="margin-top:10px">Kein eigenes Material dabei? Im Bereich <a href="#planen">Planen</a> liegen neun Beispieldateien zum Herunterladen.</p>
     </div>
@@ -409,7 +705,7 @@
     <div class="inhalt">
       <p>Herausgeber: Hessische Lehrkräfteakademie, Sachgebiet F 3-4 Medienbildung, Künstliche Intelligenz, Servicestelle Medienproduktion, Lahnstraße 61, 35398 Gießen.</p>
       <p>Verantwortlich: Markus Pleimfeldner. Kontakt: <a href="mailto:martin.kurz@bildung.hessen.de">martin.kurz@bildung.hessen.de</a></p>
-      <p>Begleitmaterial zum Workshop „Vom Prompt zum Kontext“. Angaben zu Funktionen und Plänen der genannten KI-Dienste geben den Stand vom August 2026 wieder und ändern sich häufig. Für Vollständigkeit und Aktualität wird keine Gewähr übernommen, maßgeblich ist die Dokumentation des jeweiligen Anbieters. Diese Seite ersetzt keine Rechtsberatung.</p>
+      <p>Begleitmaterial zum Workshop „Vom Prompt zum Kontext“. Angaben zu Funktionen und Plänen der genannten KI-Dienste ändern sich häufig. Der Stand der Angaben steht je System bei der Quelle im Bereich Nachschlagen. Für Vollständigkeit und Aktualität wird keine Gewähr übernommen, maßgeblich ist die Dokumentation des jeweiligen Anbieters. Diese Seite ersetzt keine Rechtsberatung.</p>
       <p>Lizenz: CC BY-SA 4.0, Namensnennung Martin Kurz und Oliver Janßen, Hessische Lehrkräfteakademie. Ausgenommen sind das Hessenwappen sowie Logos und Marken Dritter.</p>
     </div>
   </details>
@@ -419,6 +715,7 @@
       <p>Diese Seite verarbeitet keine personenbezogenen Daten, lädt keine externen Ressourcen, setzt keine Cookies und überträgt keine Daten an Dritte. Alle Eingaben bleiben lokal in Ihrem Browser und sind nach dem Schließen der Seite verloren. Bitte geben Sie in den Eingabefeldern trotzdem keine persönlichen Daten ein.</p>
       <p>Hosting: Die Seite wird über GitHub Pages ausgeliefert (GitHub Inc., ein US-Anbieter). Beim Aufruf wird technisch bedingt Ihre IP-Adresse an den Hoster übertragen, damit die Seite geladen werden kann. Darüber hinaus werden keine Daten erhoben. Wird die Seite aus einem Moodle-Kurs heraus aufgerufen, liefert der jeweilige Moodle-Server sie aus, dann besteht keine Verbindung zu GitHub.</p>
       <p>Downloads: Die Beispieldateien liegen im selben GitHub-Repository. Beim Anklicken wird die Datei von dort geladen, dabei wird technisch bedingt Ihre IP-Adresse an den Hoster übertragen. Es werden keine weiteren Daten erhoben, und ohne Klick wird nichts geladen.</p>
+      <p>Externe Links: Die Links zum Config-Tool, zu duck.ai, zum Selbstlernkurs und zu den Hilfeseiten der Anbieter führen zu externen Seiten und öffnen sich in einem neuen Tab. Dort gelten die Datenschutzbestimmungen des jeweiligen Anbieters. Ohne Klick wird nichts geladen.</p>
       <p>Ihnen stehen die Rechte auf Auskunft, Berichtigung und Löschung sowie ein Beschwerderecht zu. Zuständige Aufsichtsbehörde ist der Hessische Beauftragte für Datenschutz und Informationsfreiheit.</p>
     </div>
   </details>
@@ -426,7 +723,7 @@
     <span class="absender"><img class="wappen" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGMAAAB4CAMAAADR9Lz/AAAAYFBMVEUAAAAaIm8SGE0EBhUICyQUHFoPFEMKDi4NEjsMEDUGCR0WHmEXH2QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEwHyNAAAAIHRSTlMB+a8vU8qXZ4Z3QtrgAAAAAAAAAAAAAAAAAAAAAAAAAONI/V8AAA3aSURBVHjatVqJluSorjSSWO3//94XIcCJl6zumvvap6fGmWkj0BIKCbbtV1dLSbd/fEX8y/YvBYRwbFvYS/pnIlrYatg0mIV6+0n/49L0rngLoflNPdK6kpq0bv9pabUmK+t8yy6xTflB1zXASknkt86QinAgs3x+9VFQDSGFUzRcQLec9deuUDfMNG2l2HxTyh6iDp2pBpky/LuGxUT7XRCkaUbXQM1bwvgxlG77vFVJgsVuWlKXTHvIbxbhaqeWcoiCcSXgH0ZYNV6hTPzTUPiLQFcSf6OpkGpWBLSGELaUq4XoflNcMalQvIRiAk/LCk+wsoVQav6FwSuiLXLpktyJbONn/ynV6T9YbTvtHBWKq1xzqX8hAWuGn8Tc5qw4fNq7uZs2TIESFLIsniaQ+bfddHq6uI/NOcFl5zw/C4dM2X3GUN1W8KcRV2Kdq9toGr4ds2DprZSM9ZYVP01iqTVHSSqG/9fpvz3WheEQgg0ZuNe648uA/7QYDIYFnY4AJ0/Z4IQ5W05dc0ksWykFxrXGtU83zzCwzxODbhzRksuAIyQ6AxyDf+FZu3ZN1hozV01JalyZ5trRuohFS9GtCxuL5B5pSRQ4K1UgqXC4EBEZxnWFMTqVlYLQSbb+Eb7m8tQhLdnQJIfUIq604AiuLg96i0Glq+nwYaFrfPD57wztLsx2DI/l0EY2baR9kMUlTDyEtz1g2iHvidPTrhPEWFLKin34Qk3AqQBgvqSa5Vyb5TFD9QiW6dtF6icJhd1cK1COtUIrYr25WxxuXXLNhSuHA9HXgJqaoxvJxXEStEHYOXm5ZtC+vp2BPebE2Q+/qzadMOdWp0/0m9LNp7LHpC35DFt1yDw1dcrQbc+HmzJ11X8wLpnJR6/9NtGuQ5rNIIEtpkO426w460khdbMm6KXHRco9HonvMgNgzBtYrDqDewoDLtIg1AFMt4cVv/YORTRHhD85Svnscn8KEdsumOCSJzLJuRLPU4p8BfRMoV0z9U5AxU9NDVYt/obF8jFaq0Vi3Ici4KYAhTKspGNSLq3fQRcxPIAQWQxRR0ntVIz7X4pH+OmKUnUBxjLktnJbh9sdmrb+nKUBwMc57fRxrZMq1CTxlORjq/Q8syli5iUrAhdd6epYkuN89zVJ65LyAE99LntaF3SEFxKIB8KA4WVqb5chmdsj6/SXupMkJv/n60eHsRqXR99WAIiG2uACT2V0OYeDoYQXXe1Rctp9/j/m4UVf6g7/JgdxFZ7MsQZfwEcHTdLDFGpUeRksVenb60hz8V0XN1Kc3fHj9UtLpd315IMH8TSekP8QcOfjIBZ5eZRyZFEJx++ZpaSPILkT5ezgoRFUmCIEmHsqvULFdwtpDvbR03QB2FpjZ85WHzLEo1JbJsmrALhaWvdi8gCQarlXC6fh82ke4E0ERjGSmiBZ3KiSTPDIAx7V2YBLN1jyI0OlGL10Dp1CudZK8MojRjrIzWeGDyE74xESGOGlzDsJeI38X7qjgJ7i454J7/S+W6xMbHBmcw8jZExAJtNt5M897PJ8C7kDhKd0fEt5THF3SnZx0eiEAOk9AiZXOKhGvlUAyqRjmVHmfMLJHSnYcQDysLZKMrmTPXSqEwcvW4aKTLiWaI2LErO6NTRjnKNEa4KyqvMET+f8EDEzAsARUIN1W3QqlK/BYiKUkfKeL8IRDblCVaq2Ix8jbQWvsyoKkOD8KyHh5E4F4FWdaM1aaL+MBSesjWVHiRfgU1pXM4g7OAt0SZJUBr1IbhGEJjkk8Cwfhtyp5zK27VIKI+NokgM1ONZ6tblxFYZxQcISrI47pGezUY6kZL7GcIQz4PUMiwXqk3EBvt50FDsehXhEXoo70hNAKQJ9p8dwRQDkmC9AJecs85QLUjxTdgn9rtcEnRSA62GuqJJTyAdCoT855hnTmFsYpen2scasYjpuFhQJfqWcxw2DjPpomaVDCjs4EQo0BDiuXbSSy8ER4dC5SibyTRllUfZQfEE+RoBC5wC4gahwIHzI5tpGvSBk6XjUyxN6ApoMlWDSvLRRkC5QLL3MfTWNAeI6Ssc2Q8PcCPCz5BUl7K4ne+jTwBcbsr5FCGjAL05xNj8uJG5m8rkwYq5ul0LsrcjGsMlVCbWcaefMGnIJihugQLNYfb3Wk2+XdMpP2G0vJfgFU/WafVVaneRPfpChZbYz3pZ6b0HdYdzYZmnuDtukWHpL22DevceUeFe6MTsaubrKDbYlvPA0DoYCL58Je9a7465gOAQOsmI2Ydx0opl75t3ujLe8MK6KUtN6HuJ16LhBB6JfpKjI4UDoykZQqagN0OUqILUtvugmvLA2aal6tAvUhvyLyaEvkulzTF9KItyrmpwdvkCdsuPxi435xQtzK1UchhpaV7Y3YBNCDOWeNQu9AHbMdeSJNhjyHg4d7cc72D2pY4Krk5V2ep0LSCTrJOSOjHSEJkIcRdkojQCRWIWc0ZGD/VEGlgZASj25Y/bIfuhGZKm4hfZwO+o+wHpgq2zJmawAngXIfGTpomqnrs0y0i/zhtYA5Ks7kt5E3Z5IgXey5+nfGndienq40UATlDL1LDnAgSvR9wDVgCkjQQ/ZASOAMCDbh2FE5GZgY/KWEC0IaCv2Eg7dmZWFVxnNUKZTWoSDAW3JmTjyAebSoK0dFGb0e6FoGCp6PduQ6+N7yA0Z6FShUnNam9wO7Gw4kcKo5vc0Q2HrKugnCcLWTqgiuUlcRnwL9AyijIIdDYp57dFY0+LahFoDiUOsBHyWsw23o9AFt5TAP3n7kwwSFhSHS0jah6BkNxwxtsfXWT14slRdg+z4KoOVkT6qG10RwcgY82fs5UY6qvkfb8tcI256WluqBjQonzAGJ1q50sLxvPhC/Ih3qkL8IgNAylbEnH3Vqo9I0nVH4ZM4MtUH+oMXanmV0YH30mrOXsngVeva6tJ6e9JehIxMjZBKbylpyPAtANIP6216wG4CI/Fippqnh3x4KyF9BKVr3pe5cfJEJ6/XZLROAlM/2A6xvJCRIfYVac48f6PD6c2k3pbfrF7WJBOOvsjYZd939mwRD4UrSa+N7Q5kerZlPrsrmVR15I2nDDoT4s9bkknYkDvT7Zftr40gQFDBsLZ8jwi17zIAIo0EDbgWQ/hhp8r3WQp6UUFqlR3P588WzwGhxTcfnkQFyV+7/TJoT7o/oWSjBMnUqTNLNYAlsxLI7xQC2ajlJL6k2kGGQIx1MI58CwuL2kALev+AAE9AJ7rXvRobWXV0LIxbWe01e/fs+2mx6knwc28u2AHtJHB2BJl5YVrYYmbpiXII2dyL6ODQ3Acsz8x6ZYr5U5yI0yy8jMlifGin9F0D0p5IVbHlUA+yFG49dBnPjco39Z2egoDJ5B7wahToTCTdJhgPGR7WYO5jLYjsSOpTv7ApvbmapfzxxtC3DaAiLytRRPXqH/2Eytrt01VkMdizY35hbFd4qeYdEK/fKuIGlT/LEhaYan6h18H2TPIPyDB+FVAvQH/vSdsfZHgfJIoHi7Fgm5yljZ2MEFabLmW2pujd0fQmI1zbSClWT+yOPp1FqHbPi6z5bJkT9rlSBxRw4tYb+OmFQd8D27FNZi/m0hqys38+00z13i5QboCwrmXzg2AtZJdJR6j4645yTxP544b2qfEeROf+3U2uuTbssZ3ct7HWPc207fpY51sPWS70NKMG/7FHPTrVbi0Y4SCWifMeLeVN9z0RrjOjh96OApyhX10ztSyUIY8aChVu6mcCNLzsEC9dRbZ8EkuvUpN8rsLWFIozWhOqYk8wer/6drmu7A03TsF9U4b8tcbEKoCoirIMW47Cb7kl2asr6IO1mhdayAtpdJrsoZaH846SufieRJhdw+LQh2YeSyYocd8LFESpuEV3AZUjuegZmW8t/Y/RgXTo/sR1H4VbmAnNClB41mSVyRS5Eo0k9J9QCWCHPrIaQsNjhsV7Hp3tQ+YLn3vq1URjJYOKULC/jSg7zM7mWiG2o9mDCpj7hqBuoOD5DWLvBjHfEK4b6QBYhLLzLqg4D2w6Ni8q63l4A7SSzX9uDQI82THrofJujmekj0rQA6qnHdScS18ER1myuwTUljuqx5lKv1GOcstc0WvWeIb29fQMGk7JN6SKu5J6b9nuOnkq68rm9SABvvU8MklDY7pmsq3hdLywor2E78TsSka4x3/zPX5Vsp+QAq+oZPm8Ej6uw35nZ3ZzBp4fkXrdGPNtKMQCNzfPjcHMBkRcXfT7EaP9FjjtuYEm3SZqad3dQdmyNslC+H6+yMIfj7owCaXtUoKAgTTJl3pJfjwp9sejLkkW9bW+tHzJH/oTV/af/3yK6tyDHnUsIrXZZaI/H5Upf9KWkFrbKG7YSQaMzSMBfzkEAeSHX7GLSsgwNrD9LAxg5taczT9ravjE133OwlkjBtPhxUEpUV/c5mVP+8UkX5zbCz/y6Y77bN6/lBjhb06TkRt/2apFnUh2Pba74nM29e9EeCgeb96FxLf5lgW4OnILN5DbPc2Fvz4TJ+E946sfMGIjRjwP2411hPiL84M5hJdoXFsYaCxencNiCL88CIml7D/FvGwXhkcJ8dcnYr3Q/36Q9rJhjDotxP90ZLRvY3471ZDGtNV35OW/n7ftfeLlBMl9g9xz4Nd5/O1VeyrdpV6mqrXXnT8c3/id0tCvWE92zNMhQcr/75Hk1vVS2MJy/f2jE88M713+Jwv/pa/t//xkeJFfv/J/lLRRfwe69ycAAAAASUVORK5CYII=" alt="">Hessische Lehrkräfteakademie</span>
     <span>Sachgebiet F 3-4 Medienbildung, Künstliche Intelligenz, Servicestelle Medienproduktion</span>
   </div>
-  <p class="schlusszeile">Angaben zu Plänen und Limits: Stand 19.08.2026, Quellen: offizielle Hilfeseiten der Anbieter. Oberflächen und Grenzen ändern sich, im Zweifel gilt die Anbieter-Doku.</p>
+  <p class="schlusszeile">Seitenstand 13.11.2026. Angaben zu Plänen und Limits: Stand und Quelle stehen je System im Bereich Nachschlagen. Oberflächen und Grenzen ändern sich, im Zweifel gilt die Anbieter-Doku.</p>
 </footer>
 
 <!-- Druckansicht wird per Skript aus den Eingaben befüllt -->
@@ -445,11 +742,20 @@
 /* =====================================================================
    Daten: vier Systeme, gleiche Struktur. Inhalte hier pflegen,
    das Markup entsteht in den Render-Funktionen.
-   Faktenstand 19.08.2026, Quellen: offizielle Hilfeseiten der Anbieter.
+   Faktenstand je System im Feld `geprueft` (TT.MM.JJJJ), Beleg im Feld
+   `quelle` (offizielle Hilfeseite). Beides erscheint auf der Systemkarte
+   und in Schritt 3 der Mitmach-Seite. Optional `hinweis` fuer
+   angekuendigte Aenderungen des Anbieters.
+   Pruefung vom 13.11.2026: Was dort nicht bestaetigt werden konnte, steht
+   unten als UNSICHER-Kommentar am jeweiligen Feld.
    ===================================================================== */
 const SYSTEME = [
   {
     id: "chatgpt", name: "ChatGPT", begriff: "Projekt",
+    /* UNSICHER: Klickweg und Bezeichnungen nicht am Original geprueft, die
+       OpenAI-Hilfe lieferte beim Abruf am 13.11.2026 HTTP 403. Dateilimit
+       (Free 5, Plus 25), unbegrenzte Projektzahl und der Trainingshinweis
+       sind per Suchauszug aus help.openai.com am 13.11.2026 bestaetigt. */
     klickweg: "Seitenleiste → „Projekte“ → „Neues Projekt“",
     anweisungen: { wo: "Projektanweisungen im Projekt festlegen.", zusatz: "Gelten für jeden Chat im Projekt." },
     dateien: { wo: "„Dateien“ zum Projekt hinzufügen.", zusatz: "Free-Plan: 5 Dateien pro Projekt (Plus: 25)." },
@@ -457,7 +763,9 @@ const SYSTEME = [
     merken: [
       "Auch im kostenlosen Plan enthalten, unbegrenzt viele Projekte",
       "Achtung: Bei aktivem „Improve the model for everyone“ können Inhalte fürs Training genutzt werden"
-    ]
+    ],
+    quelle: { titel: "OpenAI-Hilfe: Projects in ChatGPT", url: "https://help.openai.com/en/articles/10169521-projects-in-chatgpt" },
+    geprueft: "13.11.2026"
   },
   {
     id: "claude", name: "Claude", begriff: "Projekt",
@@ -467,23 +775,43 @@ const SYSTEME = [
     chatfeld: { wo: "Die Nachricht im Projekt-Chat.", zusatz: "Nur noch die konkrete Aufgabe." },
     merken: [
       "Free-Plan: maximal 5 Projekte",
+      /* UNSICHER: Die Claude-Hilfe widerspricht sich (Stand 13.11.2026).
+         „What are projects?“ und „How can I create and manage projects?“
+         nennen Projekte fuer alle Konten ohne Einschraenkung bei den
+         Anweisungen, „Understanding Claude's personalization features“
+         schreibt bei Projektanweisungen „paid plans only“. */
       "Anweisungen und Wissensdateien auch mit kostenlosem Konto"
-    ]
+    ],
+    quelle: { titel: "Claude-Hilfe: How can I create and manage projects?", url: "https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects" },
+    geprueft: "13.11.2026"
   },
   {
     id: "gemini", name: "Gemini", begriff: "Gem",
     klickweg: "Menü → „Gems“ → Gem erstellen",
     anweisungen: { wo: "Instruktionen des Gems.", zusatz: "Name plus Anweisungen, dauerhaft gespeichert." },
+    /* UNSICHER: „Bis 10 Dateien pro Gem“ steht so nicht in der Google-Hilfe
+       (13.11.2026). Dort gilt das 10-Dateien-Limit fuer Uploads in einem
+       Prompt, fuer Gem-Knowledge ist keine Zahl genannt. Klickweg, Knowledge
+       mit Gerät, Drive und NotebookLM sowie Mindestalter 13 sind bestaetigt. */
     dateien: { wo: "„Knowledge“: Dateien vom Gerät, aus Drive oder NotebookLM.", zusatz: "Bis 10 Dateien pro Gem." },
     chatfeld: { wo: "Die Nachricht im Gem-Chat.", zusatz: "Nur noch die konkrete Aufgabe." },
     merken: [
       "Heißt hier Gem, nicht Projekt, wichtig für die Suche in der Oberfläche",
       "Google-Konto und Mindestalter 13 nötig, Tageskontingente als Prozentwert"
-    ]
+    ],
+    /* Bestaetigt am 13.11.2026: support.google.com/gemini/answer/18560919
+       („About the transition from Gems to skills“). */
+    hinweis: "Google stellt Gems um: Bei privaten Konten ab 18 Jahren werden sie ab 17.11.2026 zu „Skills“ und sind dann nur noch lesbar, am 17.12.2026 entfernt Google sie. Schul- und Arbeitskonten folgen 2027. Für einen Test heute geht der Gem noch.",
+    quelle: { titel: "Gemini-Hilfe: Use Gems in Gemini Apps", url: "https://support.google.com/gemini/answer/15146780" },
+    geprueft: "19.08.2026"
   },
   {
     id: "aischat", name: "AIS.chat", begriff: "Assistent",
     klickweg: "app.ais-chat.schule → Vorlage erstellen → Assistent (daneben: Lernszenario, Dialogpartner)",
+    /* UNSICHER: 10.000 Zeichen und 5 Materialdateien stehen in keiner
+       oeffentlichen Doku (FAQ auf ais-chat.schule, 13.11.2026). Bestaetigt
+       sind dort: drei Vorlagentypen, Login ueber VIDIS, pseudonym,
+       Modelle in der EU, kein Training mit Eingaben, kostenlos. */
     anweisungen: { wo: "Feld „Instruktionen“ der Vorlage.", zusatz: "Bis 10.000 Zeichen." },
     dateien: { wo: "Materialdateien der Vorlage.", zusatz: "Bis zu 5 Dateien, kompaktes Markdown wirkt am besten." },
     chatfeld: { wo: "Das, was Sie ins Chatfeld tippen.", zusatz: "Nur noch die konkrete Aufgabe." },
@@ -492,7 +820,9 @@ const SYSTEME = [
       "Datenschutzkonform: Modelle in der EU, kein Training mit Eingaben",
       "Drei Vorlagentypen: Assistent für Ihre eigene Arbeit, Lernszenario und Dialogpartner für Lernende",
       "Für die Arbeit mit Lernenden der richtige Ort"
-    ]
+    ],
+    quelle: { titel: "FAQ auf ais-chat.schule", url: "https://ais-chat.schule/faq/" },
+    geprueft: "19.08.2026"
   }
 ];
 
@@ -502,79 +832,157 @@ const ORTE = [
   { key: "chatfeld", titel: "Chatfeld", klasse: "o3", nr: "3" }
 ];
 
+/* ===== Bausteine, gemeinsam fuer Nachschlagen und Mitmachen ===== */
+
+// System-Tabs in eine Leiste rendern. Nach dem Neuaufbau bleibt der Fokus
+// auf dem gewaehlten Knopf, damit Tastaturnutzer nicht herausfallen.
+function baueSystemTabs(nav, praefix, aktivId, beiWahl) {
+  nav.innerHTML = "";
+  SYSTEME.forEach(sys => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.id = praefix + sys.id;
+    b.setAttribute("aria-selected", String(sys.id === aktivId));
+    b.textContent = sys.name;
+    b.addEventListener("click", () => {
+      beiWahl(sys.id);
+      const neu = document.getElementById(praefix + sys.id);
+      if (neu) neu.focus();
+    });
+    nav.appendChild(b);
+  });
+}
+
+// Pfeiltasten in einer Tab-Leiste: links/rechts, Pos1/Ende.
+function pfeilNavigation(nav) {
+  nav.addEventListener("keydown", e => {
+    const tabs = Array.from(nav.querySelectorAll('[role="tab"]'));
+    const i = tabs.indexOf(document.activeElement);
+    if (i < 0) return;
+    let ziel = null;
+    if (e.key === "ArrowRight") ziel = tabs[(i + 1) % tabs.length];
+    else if (e.key === "ArrowLeft") ziel = tabs[(i - 1 + tabs.length) % tabs.length];
+    else if (e.key === "Home") ziel = tabs[0];
+    else if (e.key === "End") ziel = tabs[tabs.length - 1];
+    if (!ziel) return;
+    e.preventDefault();
+    ziel.focus();
+    ziel.click();
+  });
+}
+
+function element(tag, klasse, text) {
+  const el = document.createElement(tag);
+  if (klasse) el.className = klasse;
+  if (text !== undefined) el.textContent = text;
+  return el;
+}
+
+function systemKopf(sys) {
+  const kopf = element("div", "systemkopf");
+  kopf.append(element("h3", "", sys.name), element("span", "begriff", "heißt hier: " + sys.begriff));
+  return kopf;
+}
+
+function ortBlock(sys, ort, ziel) {
+  const d = sys[ort.key];
+  const block = element("div", "ortblock " + ort.klasse);
+  const h4 = document.createElement("h4");
+  h4.append(element("span", "nr", ort.nr), document.createTextNode(ort.titel));
+  block.append(h4, element("p", "", d.wo));
+  if (d.zusatz) block.appendChild(element("p", "zusatz", d.zusatz));
+  if (ziel) block.appendChild(element("p", "ziel", ziel));
+  return block;
+}
+
+function hinweisBlock(sys) {
+  if (!sys.hinweis) return null;
+  const p = element("p", "systemhinweis");
+  p.append(element("b", "", "Achtung: "), document.createTextNode(sys.hinweis));
+  return p;
+}
+
+// Zeile „Stand TT.MM.JJJJ · Quelle: …“, Link in neuem Tab.
+function quellZeile(sys) {
+  const p = element("p", "quelle");
+  p.append("Stand " + sys.geprueft + " · Quelle: ");
+  if (sys.quelle) {
+    const a = element("a", "", sys.quelle.titel);
+    a.href = sys.quelle.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.appendChild(element("span", "sr-only", " (öffnet in neuem Tab)"));
+    p.appendChild(a);
+  } else {
+    p.append("Selbstlernkurs der Hessischen Lehrkräfteakademie (t1p.de/ais-chat-slk)");
+  }
+  return p;
+}
+
 /* ===== Nachschlagen: System-Tabs und Karte rendern ===== */
 const tabsNav = document.getElementById("systemtabs");
 const ansicht = document.getElementById("systemansicht");
 let aktivesSystem = SYSTEME[0].id;
 
 function renderSystemTabs() {
-  tabsNav.innerHTML = "";
-  SYSTEME.forEach(sys => {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.role = "tab";
-    b.id = "systab-" + sys.id;
-    b.setAttribute("aria-selected", String(sys.id === aktivesSystem));
-    b.textContent = sys.name;
-    b.addEventListener("click", () => { aktivesSystem = sys.id; renderSystemTabs(); renderSystemkarte(); });
-    tabsNav.appendChild(b);
+  baueSystemTabs(tabsNav, "systab-", aktivesSystem, id => {
+    aktivesSystem = id;
+    renderSystemTabs();
+    renderSystemkarte();
   });
 }
 
 function renderSystemkarte() {
   const sys = SYSTEME.find(s => s.id === aktivesSystem);
-  const karte = document.createElement("article");
-  karte.className = "systemkarte";
+  const karte = element("article", "systemkarte");
   karte.setAttribute("role", "tabpanel");
   karte.setAttribute("aria-labelledby", "systab-" + sys.id);
 
-  const kopf = document.createElement("div");
-  kopf.className = "systemkopf";
-  const h3 = document.createElement("h3");
-  h3.textContent = sys.name;
-  const badge = document.createElement("span");
-  badge.className = "begriff";
-  badge.textContent = "heißt hier: " + sys.begriff;
-  kopf.append(h3, badge);
+  karte.append(systemKopf(sys), element("p", "klickweg", "Wo klicken: " + sys.klickweg));
+  const hinweis = hinweisBlock(sys);
+  if (hinweis) karte.appendChild(hinweis);
 
-  const weg = document.createElement("p");
-  weg.className = "klickweg";
-  weg.textContent = "Wo klicken: " + sys.klickweg;
+  ORTE.forEach(ort => karte.appendChild(ortBlock(sys, ort)));
 
-  karte.append(kopf, weg);
-
-  ORTE.forEach(ort => {
-    const d = sys[ort.key];
-    const block = document.createElement("div");
-    block.className = "ortblock " + ort.klasse;
-    const h4 = document.createElement("h4");
-    const nr = document.createElement("span");
-    nr.className = "nr";
-    nr.textContent = ort.nr;
-    h4.append(nr, document.createTextNode(ort.titel));
-    const p = document.createElement("p");
-    p.textContent = d.wo;
-    block.append(h4, p);
-    if (d.zusatz) {
-      const z = document.createElement("p");
-      z.className = "zusatz";
-      z.textContent = d.zusatz;
-      block.appendChild(z);
-    }
-    karte.appendChild(block);
-  });
-
-  const ul = document.createElement("ul");
-  ul.className = "merkliste";
-  sys.merken.forEach(text => {
-    const li = document.createElement("li");
-    li.textContent = text;
-    ul.appendChild(li);
-  });
-  karte.appendChild(ul);
+  const ul = element("ul", "merkliste");
+  sys.merken.forEach(text => ul.appendChild(element("li", "", text)));
+  karte.append(ul, quellZeile(sys));
 
   ansicht.innerHTML = "";
   ansicht.appendChild(karte);
+}
+
+/* ===== Mitmachen, Schritt 3: Systemwahl aus denselben Daten ===== */
+const mitTabsNav = document.getElementById("mit-systemtabs");
+const mitAnsicht = document.getElementById("mit-systemansicht");
+let mitSystem = "aischat";
+const MIT_ZIEL = {
+  anweisungen: "Hierhin gehört die Anweisung, die die KI in Schritt 2 geschrieben hat.",
+  dateien: "Hierhin gehört Ihre Materialdatei."
+};
+
+function renderMitTabs() {
+  baueSystemTabs(mitTabsNav, "mittab-", mitSystem, id => {
+    mitSystem = id;
+    renderMitTabs();
+    renderMitSystem();
+  });
+}
+
+function renderMitSystem() {
+  const sys = SYSTEME.find(s => s.id === mitSystem);
+  const panel = document.createElement("div");
+  panel.setAttribute("role", "tabpanel");
+  panel.setAttribute("aria-labelledby", "mittab-" + sys.id);
+  panel.append(systemKopf(sys), element("p", "klickweg", "Wo klicken: " + sys.klickweg));
+  const hinweis = hinweisBlock(sys);
+  if (hinweis) panel.appendChild(hinweis);
+  ORTE.filter(ort => ort.key !== "chatfeld")
+    .forEach(ort => panel.appendChild(ortBlock(sys, ort, MIT_ZIEL[ort.key])));
+  panel.appendChild(quellZeile(sys));
+  mitAnsicht.innerHTML = "";
+  mitAnsicht.appendChild(panel);
 }
 
 function renderVergleich() {
@@ -593,11 +1001,14 @@ function renderVergleich() {
   });
 }
 
-/* ===== Haupt-Tabs mit Hash-Routing (#nachschlagen / #planen) ===== */
-const ANSICHTEN = [
-  { hash: "#nachschlagen", tab: document.getElementById("tab-nachschlagen"), panel: document.getElementById("ansicht-nachschlagen") },
-  { hash: "#planen", tab: document.getElementById("tab-planen"), panel: document.getElementById("ansicht-planen") }
-];
+/* ===== Haupt-Tabs mit Hash-Routing (#start / #mitmachen / #nachschlagen / #planen) =====
+   Ohne Hash oder bei unbekanntem Hash: Start. Der gedruckte Handzettel
+   verweist auf den Tab Planen, #planen muss deshalb stabil bleiben. */
+const ANSICHTEN = ["start", "mitmachen", "nachschlagen", "planen"].map(name => ({
+  hash: "#" + name,
+  tab: document.getElementById("tab-" + name),
+  panel: document.getElementById("ansicht-" + name)
+}));
 
 function zeigeAnsicht(hash) {
   const ziel = ANSICHTEN.find(a => a.hash === hash) || ANSICHTEN[0];
@@ -606,13 +1017,22 @@ function zeigeAnsicht(hash) {
     a.tab.setAttribute("aria-selected", String(aktiv));
     a.panel.hidden = !aktiv;
   });
+  return ziel;
 }
 
 ANSICHTEN.forEach(a => a.tab.addEventListener("click", () => {
   history.replaceState(null, "", a.hash);
   zeigeAnsicht(a.hash);
 }));
-window.addEventListener("hashchange", () => zeigeAnsicht(location.hash));
+pfeilNavigation(document.querySelector(".haupttabs"));
+
+// Interne Links wie <a href="#planen"> wechseln die Ansicht, springen nach
+// oben und setzen den Fokus auf den passenden Tab.
+window.addEventListener("hashchange", () => {
+  const ziel = zeigeAnsicht(location.hash);
+  window.scrollTo(0, 0);
+  ziel.tab.focus({ preventScroll: true });
+});
 
 /* ===== Planen: Zustand, Zähler, Export ===== */
 const felder = {
@@ -680,27 +1100,107 @@ function planAlsMarkdown() {
   ].join("\n");
 }
 
-function meldeStatus(text) {
-  statusZeile.textContent = text;
-  window.setTimeout(() => { statusZeile.textContent = ""; }, 4000);
+// Statusmeldung in eine role="status"-Zeile. Erfolg verschwindet nach
+// 4 Sekunden, Fehlermeldungen bleiben laenger stehen.
+const statusTimer = new WeakMap();
+function meldeStatus(text, ziel = statusZeile, dauer = 4000) {
+  window.clearTimeout(statusTimer.get(ziel));
+  ziel.textContent = text;
+  statusTimer.set(ziel, window.setTimeout(() => { ziel.textContent = ""; }, dauer));
 }
 
-document.getElementById("btn-kopieren").addEventListener("click", async () => {
-  const text = planAlsMarkdown();
-  try {
-    await navigator.clipboard.writeText(text);
-    meldeStatus("Plan kopiert. Jetzt z. B. im Konfigurationstool einfügen.");
-  } catch {
-    // Rückfallebene für Browser ohne Clipboard-Berechtigung
-    const ta = document.createElement("textarea");
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    ta.remove();
-    meldeStatus("Plan kopiert. Jetzt z. B. im Konfigurationstool einfügen.");
+/* ===== Kopieren: eine Funktion fuer alle Knoepfe =====
+   Erst die Clipboard-API, bei Fehler Rueckfall ueber ein verstecktes
+   Textfeld und execCommand("copy"). Liefert true nur bei echtem Erfolg. */
+async function kopiere(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) {
+      // weiter mit dem Rueckfall
+    }
   }
+  const vorher = document.activeElement;
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  ta.setAttribute("aria-hidden", "true");
+  ta.style.position = "fixed";
+  ta.style.top = "0";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  ta.setSelectionRange(0, text.length);
+  let erfolg = false;
+  try {
+    erfolg = document.execCommand("copy");
+  } catch (e) {
+    erfolg = false;
+  }
+  ta.remove();
+  if (vorher && typeof vorher.focus === "function") vorher.focus();
+  return erfolg;
+}
+
+const KOPIER_FEHLER = "Kopieren hat nicht geklappt, bitte den Text markieren und von Hand kopieren.";
+
+document.getElementById("btn-kopieren").addEventListener("click", async () => {
+  const erfolg = await kopiere(planAlsMarkdown());
+  if (erfolg) meldeStatus("Plan kopiert. Jetzt z. B. im Konfigurationstool einfügen.");
+  else meldeStatus("Kopieren hat nicht geklappt. Bitte „Als Markdown speichern“ nutzen oder die Felder einzeln markieren und kopieren.", statusZeile, 12000);
 });
+
+/* ===== Mitmachen, Schritt 1: Idee, Beispiele, Kopieren ===== */
+const mitIdee = document.getElementById("mit-idee");
+
+// Die Idee wandert in das Feld „Meine Unterrichtsidee“ im Planen-Tab,
+// solange dort nichts Eigenes steht.
+let gespiegelteIdee = "";
+function spiegleIdee() {
+  const planIdee = felder.idee;
+  if (planIdee.value !== "" && planIdee.value !== gespiegelteIdee) return;
+  gespiegelteIdee = mitIdee.value.replace(/\s+/g, " ").trim();
+  planIdee.value = gespiegelteIdee;
+  synchronisiereDruck();
+}
+mitIdee.addEventListener("input", spiegleIdee);
+
+document.querySelectorAll("[data-beispiel]").forEach(knopf => {
+  knopf.addEventListener("click", () => {
+    const text = document.getElementById(knopf.dataset.beispiel).textContent.trim();
+    const eigenes = mitIdee.value.trim();
+    if (eigenes && eigenes !== text && !window.confirm("Ihr Text im Feld wird durch das Beispiel ersetzt. Fortfahren?")) return;
+    mitIdee.value = text;
+    spiegleIdee();
+    mitIdee.focus();
+    meldeStatus("Beispiel übernommen. Sie können es im Feld anpassen.", document.getElementById("status-schritt1"));
+  });
+});
+
+document.querySelectorAll("[data-kopiere-idee]").forEach(knopf => {
+  knopf.addEventListener("click", async () => {
+    const ziel = document.getElementById(knopf.dataset.kopiereIdee);
+    const text = mitIdee.value.trim();
+    if (!text) {
+      meldeStatus("Das Feld „Meine Idee“ in Schritt 1 ist noch leer.", ziel, 8000);
+      return;
+    }
+    const erfolg = await kopiere(text);
+    if (erfolg) meldeStatus("Kopiert. Jetzt in der KI ganz unten unter IHRE EINGABE einfügen.", ziel);
+    else meldeStatus(KOPIER_FEHLER, ziel, 12000);
+  });
+});
+
+/* ===== Mitmachen, Schritt 4: Pruefliste, nur lokal ===== */
+const pruefKaesten = Array.from(document.querySelectorAll(".pruefliste input[type=\"checkbox\"]"));
+const pruefStand = document.getElementById("pruef-stand");
+pruefKaesten.forEach(k => k.addEventListener("change", () => {
+  const n = pruefKaesten.filter(x => x.checked).length;
+  pruefStand.textContent = n === pruefKaesten.length
+    ? "Alle vier Proben bestanden. Ihr Kontext wirkt."
+    : n + " von " + pruefKaesten.length + " geprüft";
+}));
 
 document.getElementById("btn-markdown").addEventListener("click", () => {
   const datum = new Date().toISOString().slice(0, 10);
@@ -725,6 +1225,10 @@ window.addEventListener("beforeprint", synchronisiereDruck);
 renderSystemTabs();
 renderSystemkarte();
 renderVergleich();
+renderMitTabs();
+renderMitSystem();
+pfeilNavigation(tabsNav);
+pfeilNavigation(mitTabsNav);
 aktualisiereZaehler("ort1");
 aktualisiereZaehler("ort3");
 synchronisiereDruck();
