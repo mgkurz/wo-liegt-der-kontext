@@ -289,6 +289,7 @@
   .schritt .feld { margin-bottom: 10px; }
   .schritt .aktionen { margin: 12px 0 6px; }
   .schritt p + p { margin-top: 8px; }
+  .schritt .startkarte { margin: 0 0 14px; }
   .aktionen a.knopf {
     display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px;
     font-size: 1rem; font-weight: 700; text-decoration: none; border: 2px solid var(--blau);
@@ -494,6 +495,13 @@
         <div class="schrittkopf"><span class="nr" aria-hidden="true">2</span><h2 id="schritt2-titel">Prompt holen</h2></div>
         <p class="lead">Im Config-Tool, Typ Assistent. Prompt und Idee in eine KI geben, heute duck.ai ohne Konto.</p>
 
+        <a class="startkarte haupt" href="https://mgkurz.github.io/ais-chat-config/" target="_blank" rel="noopener">
+          <span class="titel">Config-Tool öffnen</span>
+          <span class="text">Typ „Assistent“ wählen, dann „Prompt kopieren“ · t1p.de/ais-chat-bauen</span>
+          <span class="pfeil" aria-hidden="true">↗</span>
+          <span class="sr-only">(öffnet in neuem Tab)</span>
+        </a>
+
         <ol class="klickkette" aria-label="Klickpfad">
           <li><span>Config-Tool</span></li>
           <li><span>Assistent</span></li>
@@ -505,7 +513,6 @@
         </ol>
 
         <div class="aktionen">
-          <a class="knopf primaer" href="https://mgkurz.github.io/ais-chat-config/" target="_blank" rel="noopener">Config-Tool öffnen<span class="sr-only"> (öffnet in neuem Tab)</span></a>
           <a class="knopf sekundaer" href="https://duck.ai" target="_blank" rel="noopener">duck.ai öffnen<span class="sr-only"> (öffnet in neuem Tab)</span></a>
           <button type="button" class="sekundaer" data-kopiere-idee="status-schritt2">Idee kopieren</button>
         </div>
@@ -775,11 +782,14 @@ const SYSTEME = [
     chatfeld: { wo: "Die Nachricht im Projekt-Chat.", zusatz: "Nur noch die konkrete Aufgabe." },
     merken: [
       "Free-Plan: maximal 5 Projekte",
-      /* UNSICHER: Die Claude-Hilfe widerspricht sich (Stand 13.11.2026).
-         „What are projects?“ und „How can I create and manage projects?“
-         nennen Projekte fuer alle Konten ohne Einschraenkung bei den
-         Anweisungen, „Understanding Claude's personalization features“
-         schreibt bei Projektanweisungen „paid plans only“. */
+      /* Geprueft 13.11.2026: Drei Stellen der Claude-Hilfe sagen „Projects are
+         available to all users, including those with free Claude accounts“
+         und „Free users can create a maximum of five projects“ (9517075,
+         9519177 und Abschnitt „Project instructions“ in 10185728). Nur die
+         Schluss-Aufzaehlung von 10185728 schreibt bei Projektanweisungen
+         „(paid plans only)“, vermutlich veraltet. Echte Bezahlgrenze laut
+         9517075: RAG fuer grosse Wissensmengen (Pro, Max, Ultra, Team,
+         Enterprise). Free: Wissen muss ins Kontextfenster passen. */
       "Anweisungen und Wissensdateien auch mit kostenlosem Konto"
     ],
     quelle: { titel: "Claude-Hilfe: How can I create and manage projects?", url: "https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects" },
